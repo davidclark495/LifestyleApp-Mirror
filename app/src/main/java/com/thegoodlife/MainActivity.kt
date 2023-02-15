@@ -1,12 +1,10 @@
 package com.thegoodlife
 
 import androidx.appcompat.app.AppCompatActivity
-import com.thegoodlife.UserCreateFragment.ReceiveProfileInterface
-import android.widget.TextView
+import com.thegoodlife.UserCreateFragment.ReceiveUserInterface
 import android.os.Bundle
-import android.view.View
 
-class MainActivity : AppCompatActivity(), ReceiveProfileInterface {
+class MainActivity : AppCompatActivity(), ReceiveUserInterface {
 //    private var mStringFirstName: String? = null
 //    private var mTvFirstName: TextView? = null
 
@@ -19,7 +17,7 @@ class MainActivity : AppCompatActivity(), ReceiveProfileInterface {
 
         //Create the fragment
 //        val submitFragment = SubmitFragment()
-        val userCreateFragment = UserCreateFragment();
+        val userCreateFragment = UserCreateFragment()
 
         //Replace the fragment container
         val fTrans = supportFragmentManager.beginTransaction()
@@ -27,7 +25,11 @@ class MainActivity : AppCompatActivity(), ReceiveProfileInterface {
         fTrans.commit()
     }
 
-    override fun receiveUserProfile(data: Array<String?>?) {
-        // do something
+    override fun receiveUserProfile(data: User?) {
+        mUser = data
+    }
+
+    companion object {
+        private var mUser: User? = null
     }
 }

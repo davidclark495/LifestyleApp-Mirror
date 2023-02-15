@@ -93,5 +93,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Profile" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
