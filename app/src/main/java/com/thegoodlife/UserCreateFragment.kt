@@ -11,6 +11,7 @@ import android.widget.NumberPicker
 import android.widget.Spinner
 import android.widget.Button
 import android.widget.ArrayAdapter
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import java.lang.ClassCastException
 import android.content.Context
@@ -27,7 +28,9 @@ class UserCreateFragment : Fragment() {
     private var mWeightNumPicker: NumberPicker? = null
     private var mHeightNumPicker: NumberPicker? = null
     private var mSexSpinner: Spinner? = null
+    private var mSexStr: String? = null
     private var mActivityLevelSpinner: Spinner? = null
+    private var mActivityLevelStr: String? = null
     private var mSaveButton: Button? = null
 
     private var mUserReceiver: ReceiveUserInterface? = null
@@ -94,10 +97,17 @@ class UserCreateFragment : Fragment() {
             R.array.sex_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
             mSexSpinner!!.adapter = adapter
+        }
+        mSexSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            // add an anonymous listener class to track changes to spinner's value
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                mSexStr = parent.getItemAtPosition(pos) as String
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                mSexStr = null
+            }
         }
         // activity level (spinner)
         ArrayAdapter.createFromResource(
@@ -105,10 +115,17 @@ class UserCreateFragment : Fragment() {
             R.array.activity_level_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
             mActivityLevelSpinner!!.adapter = adapter
+        }
+        mActivityLevelSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            // add an anonymous listener class to track changes to spinner's value
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                mActivityLevelStr = parent.getItemAtPosition(pos) as String
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                mActivityLevelStr = null
+            }
         }
 
         // save button
@@ -119,8 +136,8 @@ class UserCreateFragment : Fragment() {
                 mAgeNumPicker!!.value,
                 mWeightNumPicker!!.value,
                 mHeightNumPicker!!.value,
-                null,
-                null,
+                mSexStr,
+                mActivityLevelStr,
                 null
             )
             mUserReceiver!!.receiveUserProfile(user)
@@ -143,4 +160,5 @@ class UserCreateFragment : Fragment() {
         super.onDestroyView()
 //        _binding = null
     }
+
 }

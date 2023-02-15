@@ -3,20 +3,18 @@ package com.thegoodlife
 import androidx.appcompat.app.AppCompatActivity
 import com.thegoodlife.UserCreateFragment.ReceiveUserInterface
 import android.os.Bundle
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity(), ReceiveUserInterface {
-//    private var mStringFirstName: String? = null
-//    private var mTvFirstName: TextView? = null
+    // private VARs go here
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Get stuff
-//        mTvFirstName = findViewById<View>(R.id.tv_fn_data) as TextView
+        //Get stuff from
 
         //Create the fragment
-//        val submitFragment = SubmitFragment()
         val userCreateFragment = UserCreateFragment()
 
         //Replace the fragment container
@@ -27,6 +25,14 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
 
     override fun receiveUserProfile(data: User?) {
         mUser = data
+        // SANITY CHECK: try outputting a sample of User data
+        try {
+            Toast.makeText(
+                this,
+                "Received User data: %s, %d, %s".format(mUser!!.name, mUser!!.age, mUser!!.sex),
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {}
     }
 
     companion object {
