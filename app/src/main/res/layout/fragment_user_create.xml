@@ -14,6 +14,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/profile_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +30,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:hint="Enter Name" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -98,6 +103,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save Profile" />
+
+        <Button
+            android:id="@+id/button_camera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Take Profile Photo" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.thegoodlife
 
 
+import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,12 @@ import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import java.lang.ClassCastException
 import android.content.Context
-
+import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 
 
 /**
@@ -32,9 +38,9 @@ class UserCreateFragment : Fragment() {
     private var mActivityLevelSpinner: Spinner? = null
     private var mActivityLevelStr: String? = null
     private var mSaveButton: Button? = null
-
+    private var cameraButton: Button? = null
     private var mUserReceiver: ReceiveUserInterface? = null
-
+    private var profilePhoto: ImageView? = null
 
     // Callback interface
     interface ReceiveUserInterface {
@@ -50,6 +56,16 @@ class UserCreateFragment : Fragment() {
             throw ClassCastException("$context must implement UserCreateFragment.ReceiveUserInterface")
         }
     }
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                profilePhoto = view?.findViewById(R.id.profile_image_view) as ImageView
+                val thumbnailImage = result.data!!.getParcelableExtra("data", Bitmap::class.java)
+                profilePhoto!!.setImageBitmap(thumbnailImage)
+
+            }
+        }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +82,7 @@ class UserCreateFragment : Fragment() {
         mSexSpinner = view.findViewById(R.id.spinner_sex) as Spinner
         mActivityLevelSpinner = view.findViewById(R.id.spinner_activity_level) as Spinner
         mSaveButton = view.findViewById(R.id.button_save) as Button
-
+        cameraButton = view.findViewById(R.id.button_camera) as Button
         // Setup stuff
         // age
         mAgeNumPicker!!.minValue = 0
@@ -142,6 +158,15 @@ class UserCreateFragment : Fragment() {
             )
             mUserReceiver!!.receiveUserProfile(user)
         }
+        cameraButton!!.setOnClickListener {
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+            try {
+                cameraLauncher.launch(cameraIntent)
+            } catch (ex: ActivityNotFoundException) {
+            }
+        }
+
 
         return view
     }
