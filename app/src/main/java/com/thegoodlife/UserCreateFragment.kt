@@ -6,22 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Toast
-import android.widget.NumberPicker
-import android.widget.Spinner
-import android.widget.Button
-import android.widget.ArrayAdapter
-import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import java.lang.ClassCastException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import android.widget.ImageView
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import org.w3c.dom.Text
+import kotlin.math.round
 
 
 /**
@@ -41,6 +36,9 @@ class UserCreateFragment : Fragment() {
     private var cameraButton: Button? = null
     private var mUserReceiver: ReceiveUserInterface? = null
     private var profilePhoto: ImageView? = null
+    private var calculateBMRText: TextView? = null
+    private var calculateBMR: Button? = null
+    private var bmrVal: Double? = null
 
     // Callback interface
     interface ReceiveUserInterface {
@@ -48,7 +46,7 @@ class UserCreateFragment : Fragment() {
     }
 
     // attach to parent Activity, Activity must implement ReceiveUserInterface
-    override fun onAttach(context: Context){
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         mUserReceiver = try {
             context as ReceiveUserInterface
@@ -56,6 +54,7 @@ class UserCreateFragment : Fragment() {
             throw ClassCastException("$context must implement UserCreateFragment.ReceiveUserInterface")
         }
     }
+
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
@@ -83,6 +82,8 @@ class UserCreateFragment : Fragment() {
         mActivityLevelSpinner = view.findViewById(R.id.spinner_activity_level) as Spinner
         mSaveButton = view.findViewById(R.id.button_save) as Button
         cameraButton = view.findViewById(R.id.button_camera) as Button
+        calculateBMR = view.findViewById(R.id.bmr) as Button
+        calculateBMRText = view.findViewById(R.id.bmr_text) as TextView
         // Setup stuff
         // age
         mAgeNumPicker!!.minValue = 0
@@ -96,14 +97,20 @@ class UserCreateFragment : Fragment() {
         mWeightNumPicker!!.value = 150
         mWeightNumPicker!!.wrapSelectorWheel = false
         mWeightNumPicker!!.setOnLongPressUpdateInterval(100)
-        mWeightNumPicker!!.setFormatter(NumberPicker.Formatter { String.format("%d lbs",it) })
+        mWeightNumPicker!!.setFormatter(NumberPicker.Formatter { String.format("%d lbs", it) })
         // height
         mHeightNumPicker!!.minValue = 0
         mHeightNumPicker!!.maxValue = 200
         mHeightNumPicker!!.value = 60
         mHeightNumPicker!!.wrapSelectorWheel = false
         mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
-        mHeightNumPicker!!.setFormatter(NumberPicker.Formatter { String.format("%d' %d\" ",it/12, it%12) })
+        mHeightNumPicker!!.setFormatter(NumberPicker.Formatter {
+            String.format(
+                "%d' %d\" ",
+                it / 12,
+                it % 12
+            )
+        })
 
         // spinner documentation --> https://developer.android.com/develop/ui/views/components/spinner?hl=en
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -121,6 +128,7 @@ class UserCreateFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mSexStr = parent.getItemAtPosition(pos) as String
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
                 mSexStr = null
             }
@@ -134,18 +142,25 @@ class UserCreateFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mActivityLevelSpinner!!.adapter = adapter
         }
-        mActivityLevelSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            // add an anonymous listener class to track changes to spinner's value
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-                mActivityLevelStr = parent.getItemAtPosition(pos) as String
+        mActivityLevelSpinner!!.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                // add an anonymous listener class to track changes to spinner's value
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
+                    mActivityLevelStr = parent.getItemAtPosition(pos) as String
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    mActivityLevelStr = null
+                }
             }
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                mActivityLevelStr = null
-            }
-        }
 
         // save button
-        mSaveButton!!.setOnClickListener{
+        mSaveButton!!.setOnClickListener {
             // build user from fields & trigger ReceiveUserInterface Callback
             val user = User(
                 mNameET!!.text.toString(),
@@ -167,6 +182,34 @@ class UserCreateFragment : Fragment() {
             }
         }
 
+        //calculate bmr button
+        calculateBMR!!.setOnClickListener {
+            val kgWeight: Double = mWeightNumPicker!!.value * 0.45359237;
+            val cmHeight: Double = mHeightNumPicker!!.value * 2.54;
+            //male
+            if (mSexStr == "Male") {
+                bmrVal =
+                    round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) + 5))
+            }
+            //female
+            else if (mSexStr == "Female") {
+                bmrVal =
+                    round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) - 161))
+            }
+            //other
+            else {
+                bmrVal = 0.0
+            }
+            //try display if valid bmr
+            try {
+                calculateBMRText!!.text =
+                    "Your daily target calorie intake is: " + bmrVal.toString()
+            } catch (e: Exception) {
+
+            }
+
+        }
+
 
         return view
     }
@@ -185,5 +228,4 @@ class UserCreateFragment : Fragment() {
         super.onDestroyView()
 //        _binding = null
     }
-
 }

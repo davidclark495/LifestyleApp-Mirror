@@ -108,7 +108,20 @@
             android:id="@+id/button_camera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Take Profile Photo" />
+            android:text="Take Profile Photo"/>
+
+        <Button
+            android:id="@+id/bmr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Calculate BMR"/>
+
+        <TextView
+            android:id="@+id/bmr_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No daily target calorie intake" />
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
