@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
 
         //Replace the fragment container
         val fTrans = supportFragmentManager.beginTransaction()
-        fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
+        fTrans.replace(R.id.fl_main_frag_container, userCreateFragment, "userCreat_frag")
         fTrans.commit()
     }
 
@@ -29,7 +29,12 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         try {
             Toast.makeText(
                 this,
-                "Received User data: %s, %d, %s".format(mUser!!.name, mUser!!.age, mUser!!.sex),
+                "Received User data: %s, %d, %s, %s".format(
+                        mUser!!.name,
+                        mUser!!.age,
+                        mUser!!.sex,
+                        if(mUser!!.profile_pic != null) "(has pic)" else "(no pic)"
+            ),
                 Toast.LENGTH_SHORT
             ).show()
         } catch (e: Exception) {}
