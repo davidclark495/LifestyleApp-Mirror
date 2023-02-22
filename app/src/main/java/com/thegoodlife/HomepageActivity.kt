@@ -27,9 +27,8 @@ class HomepageActivity : AppCompatActivity() {
         mWeatherButton = findViewById(R.id.weatherButton)
         mBmrText = findViewById(R.id.bmrBox)
 
-        //mProfPic!!.requestFocus();
 
-        //null here?
+        //listeners should handle activity switching
         mProfPic!!.setOnClickListener {
             Toast.makeText(this, "go to profile activity", Toast.LENGTH_SHORT).show()
         }
@@ -42,23 +41,9 @@ class HomepageActivity : AppCompatActivity() {
             Toast.makeText(this, "go to weather activity", Toast.LENGTH_SHORT).show()
         }
 
-        //do onclicklisteners too
-
-        //Get the starter intent
         val receivedIntent = intent
 
-        //Set the image view
         val imagePath = receivedIntent.getStringExtra("imagePath")
-
-        /*
-        if (imagePath != null) {
-            Log.i("homepage:", imagePath)
-        }
-        else
-        {
-            Log.i("homepage:", "NULL")
-        }
-         */
 
         val thumbnailImage = BitmapFactory.decodeFile(imagePath)
         if (thumbnailImage != null) {

@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true" >
-    -->
+
 
     <ImageButton
         android:id="@+id/profButton"
@@ -23,7 +20,8 @@
         android:id="@+id/hikeButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@android:drawable/presence_invisible"
+        android:background="?android:attr/listChoiceIndicatorSingle"
+        android:backgroundTint="#2196F3"
         app:layout_constraintBottom_toTopOf="@+id/weatherButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +33,8 @@
         android:id="@+id/weatherButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@android:drawable/presence_invisible"
+        android:background="?android:attr/listChoiceIndicatorSingle"
+        android:backgroundTint="#009688"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"

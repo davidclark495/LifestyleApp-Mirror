@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import androidx.fragment.app.Fragment
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.reflect.InvocationTargetException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.round
@@ -81,45 +81,20 @@ class UserCreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //gonna be more complicated than that
         mHomeIntent = Intent(activity, HomepageActivity::class.java)
         var input = resources.openRawResource(R.raw.country_city)
         var jstr = input.bufferedReader().use { it.readText() }
         input.close()
-        //print(jstr)//seems good
-        //Log.i("\n", jstr)
+
         val jobj = JSONObject(jstr)
 
-        //var belgcit = jobj["Belgium"]
-
         var countries = jobj.keys().asSequence().toList()
-        var sort = countries.sorted() //
-        countryList = countries.sorted()
-
-        Log.i("--sort--", sort.toString())
-/*
-        var usacit = arrayOf(jobj["United States"])//
-        usacit.sort()
-*/
-
-        for (country in sort) {
-            var citiesJ = jobj.getJSONArray(country)// as Array<String> //is a json array
-
-            var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
-
-            //print(cities.toString())
-            var sort2 = citiesS.toList().sorted()
-            Log.i("--" + country + "--", sort2.toString())
-        }
-
-
-        //Log.i("--USA--", usacit[0].toString())
-
-        //print(jobj["Belgium"]) //
-        //Log.i("--Belgium--:", belgcit.toString())
-        //var jstruc = jobj. //.toMap()
+        var sort = countries.sorted()
+        countryList = sort
 
         val view = inflater.inflate(R.layout.fragment_user_create, container, false)
+
+        //new views
         mCountrySpinner = view.findViewById(R.id.spinner_country) as Spinner
         mCitySpinner = view.findViewById(R.id.spinner_city) as Spinner
 
@@ -143,28 +118,59 @@ class UserCreateFragment : Fragment() {
         mAgeNumPicker!!.value = 18
         mAgeNumPicker!!.wrapSelectorWheel = false
         mAgeNumPicker!!.setOnLongPressUpdateInterval(100)
-        // weight
+        // weightSS
         mWeightNumPicker!!.minValue = 0
         mWeightNumPicker!!.maxValue = 1000
-        mWeightNumPicker!!.setFormatter(NumberPicker.Formatter { String.format("%d lbs", it) })
         mWeightNumPicker!!.value = 150
         mWeightNumPicker!!.wrapSelectorWheel = false
+        mWeightNumPicker!!.setFormatter { String.format("%d lbs", it) }
         mWeightNumPicker!!.setOnLongPressUpdateInterval(100)
-        // height
+        try {
+            val method = mWeightNumPicker!!.javaClass.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
+            method.setAccessible(true)
+            method.invoke(mWeightNumPicker, true)
+        } catch (e: NoSuchMethodException) {
+            e.printStackTrace()
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
+        } catch (e: InvocationTargetException) {
+            e.printStackTrace()
+        }
+        mWeightNumPicker!!.setOnClickListener {
+            ;
+        }
 
         mHeightNumPicker!!.minValue = 0
         mHeightNumPicker!!.maxValue = 200
-        mHeightNumPicker!!.setFormatter(NumberPicker.Formatter {
+        mHeightNumPicker!!.value = 60
+        mHeightNumPicker!!.wrapSelectorWheel = false
+        mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
+        mHeightNumPicker!!.setFormatter {
             String.format(
                 "%d' %d\" ",
                 it / 12,
                 it % 12
             )
-        })
-        mHeightNumPicker!!.value = 60
-        mHeightNumPicker!!.wrapSelectorWheel = false
-        mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
+        }
 
+        try {
+            val method = mHeightNumPicker!!.javaClass.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
+            method.setAccessible(true)
+            method.invoke(mHeightNumPicker, true)
+        } catch (e: NoSuchMethodException) {
+            e.printStackTrace()
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
+        } catch (e: InvocationTargetException) {
+            e.printStackTrace()
+        }
+        mHeightNumPicker!!.setOnClickListener {
+            ;
+        }
 
         /////
         val countryAdapter: ArrayAdapter<String> =
@@ -179,7 +185,7 @@ class UserCreateFragment : Fragment() {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mCountry = parent.getItemAtPosition(pos) as String
-                makeCitySpinner(jobj)//?
+                makeCitySpinner(jobj)//sghetti
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -247,22 +253,17 @@ class UserCreateFragment : Fragment() {
                 mSexStr,
                 mActivityLevelStr,
                 mProfilePhotoBitmap,
-                //User.kt : change
+                /*
+                //User.kt : change constructor, etc.
                 //mCountry,
                 //mCity
+                 */
             )
             mUserReceiver!!.receiveUserProfile(user)
-            //should save this to a file for later or just preserve in instancestate
 
             mHomeIntent!!.putExtra("bmr", calcBMR())
             startActivity(mHomeIntent)
-/*
-            val intent = Intent()
-            intent.setClass(activity!!, other::class.java)
-            //pass thumbnail
-            intent.putExtra("path", "TODO")
-            activity!!.startActivity(intent)
-*/
+
         }
         mCameraButton!!.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -303,8 +304,6 @@ class UserCreateFragment : Fragment() {
 
     private fun makeCitySpinner(jobj: JSONObject)
     {
-        /////
-
         var cities = listOf("Select a Country")
 
         if(mCountry != null)
@@ -313,15 +312,10 @@ class UserCreateFragment : Fragment() {
 
             var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
 
-            //print(cities.toString())
             var sort2 = citiesS.toList().sorted()
 
             cities = sort2
         }
-
-        /////
-
-        //do this as method -> called when selected
 
         val cityAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(
@@ -413,6 +407,7 @@ class UserCreateFragment : Fragment() {
     // Misc. Fragment Lifecycle
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //should probably restore this, no lifecycle at the moment
         // restore profile phot from bundle, if possible (WIP)
 //        try {
 //            if(Build.VERSION.SDK_INT >= 33) {
