@@ -5,10 +5,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +16,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -29,6 +30,12 @@ import kotlin.math.round
 class UserCreateFragment : Fragment() {
 
     private var mHomeIntent: Intent? = null
+    private var mCountrySpinner: Spinner? = null
+    private var mCitySpinner: Spinner? = null
+    private var countryList: List<String>? = null
+    private var mCountry: String? = null
+    private var mCity: String? = null
+    //private var cityList: Array<String>? = null
 
     // the host Activity, must support an interface/callback
     private var mUserReceiver: ReceiveUserInterface? = null
@@ -76,8 +83,46 @@ class UserCreateFragment : Fragment() {
     ): View? {
         //gonna be more complicated than that
         mHomeIntent = Intent(activity, HomepageActivity::class.java)
+        var input = resources.openRawResource(R.raw.country_city)
+        var jstr = input.bufferedReader().use { it.readText() }
+        input.close()
+        //print(jstr)//seems good
+        //Log.i("\n", jstr)
+        val jobj = JSONObject(jstr)
+
+        //var belgcit = jobj["Belgium"]
+
+        var countries = jobj.keys().asSequence().toList()
+        var sort = countries.sorted() //
+        countryList = countries.sorted()
+
+        Log.i("--sort--", sort.toString())
+/*
+        var usacit = arrayOf(jobj["United States"])//
+        usacit.sort()
+*/
+
+        for (country in sort) {
+            var citiesJ = jobj.getJSONArray(country)// as Array<String> //is a json array
+
+            var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
+
+            //print(cities.toString())
+            var sort2 = citiesS.toList().sorted()
+            Log.i("--" + country + "--", sort2.toString())
+        }
+
+
+        //Log.i("--USA--", usacit[0].toString())
+
+        //print(jobj["Belgium"]) //
+        //Log.i("--Belgium--:", belgcit.toString())
+        //var jstruc = jobj. //.toMap()
 
         val view = inflater.inflate(R.layout.fragment_user_create, container, false)
+        mCountrySpinner = view.findViewById(R.id.spinner_country) as Spinner
+        mCitySpinner = view.findViewById(R.id.spinner_city) as Spinner
+
         // Get views
         mNameET = view.findViewById(R.id.et_name) as EditText
         mAgeNumPicker = view.findViewById(R.id.number_age) as NumberPicker
@@ -88,8 +133,9 @@ class UserCreateFragment : Fragment() {
         mProfilePhotoView = view.findViewById(R.id.profile_image_view) as ImageView
         mSaveButton = view.findViewById(R.id.button_save) as Button
         mCameraButton = view.findViewById(R.id.button_camera) as Button
-        mCalculateBMRButton = view.findViewById(R.id.button_bmr) as Button
-        mCalculateBMRText = view.findViewById(R.id.bmr_text) as TextView
+        //mCalculateBMRButton = view.findViewById(R.id.button_bmr) as Button
+        //mCalculateBMRText = view.findViewById(R.id.bmr_text) as TextView
+
         // Setup stuff
         // age
         mAgeNumPicker!!.minValue = 0
@@ -100,16 +146,14 @@ class UserCreateFragment : Fragment() {
         // weight
         mWeightNumPicker!!.minValue = 0
         mWeightNumPicker!!.maxValue = 1000
+        mWeightNumPicker!!.setFormatter(NumberPicker.Formatter { String.format("%d lbs", it) })
         mWeightNumPicker!!.value = 150
         mWeightNumPicker!!.wrapSelectorWheel = false
         mWeightNumPicker!!.setOnLongPressUpdateInterval(100)
-        mWeightNumPicker!!.setFormatter(NumberPicker.Formatter { String.format("%d lbs", it) })
         // height
+
         mHeightNumPicker!!.minValue = 0
         mHeightNumPicker!!.maxValue = 200
-        mHeightNumPicker!!.value = 60
-        mHeightNumPicker!!.wrapSelectorWheel = false
-        mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
         mHeightNumPicker!!.setFormatter(NumberPicker.Formatter {
             String.format(
                 "%d' %d\" ",
@@ -117,6 +161,35 @@ class UserCreateFragment : Fragment() {
                 it % 12
             )
         })
+        mHeightNumPicker!!.value = 60
+        mHeightNumPicker!!.wrapSelectorWheel = false
+        mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
+
+
+        /////
+        val countryAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(
+                requireContext(), android.R.layout.simple_spinner_dropdown_item,
+                countryList as List<String>
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                mCountrySpinner!!.adapter = adapter
+            }
+        mCountrySpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            // add an anonymous listener class to track changes to spinner's value
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                mCountry = parent.getItemAtPosition(pos) as String
+                makeCitySpinner(jobj)//?
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                mCountry = null
+            }
+        }
+
+
+        /////
+
         // spinner documentation --> https://developer.android.com/develop/ui/views/components/spinner?hl=en
         // Create an ArrayAdapter using the string array and a default spinner layout
         // sex (spinner)
@@ -133,6 +206,7 @@ class UserCreateFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mSexStr = parent.getItemAtPosition(pos) as String
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
                 mSexStr = null
             }
@@ -149,9 +223,15 @@ class UserCreateFragment : Fragment() {
         mActivityLevelSpinner!!.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 // add an anonymous listener class to track changes to spinner's value
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
                     mActivityLevelStr = parent.getItemAtPosition(pos) as String
                 }
+
                 override fun onNothingSelected(parent: AdapterView<*>) {
                     mActivityLevelStr = null
                 }
@@ -166,7 +246,10 @@ class UserCreateFragment : Fragment() {
                 mHeightNumPicker!!.value,
                 mSexStr,
                 mActivityLevelStr,
-                mProfilePhotoBitmap
+                mProfilePhotoBitmap,
+                //User.kt : change
+                //mCountry,
+                //mCity
             )
             mUserReceiver!!.receiveUserProfile(user)
             //should save this to a file for later or just preserve in instancestate
@@ -185,9 +268,10 @@ class UserCreateFragment : Fragment() {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             try {
                 cameraLauncher.launch(cameraIntent)
-            } catch (ex: ActivityNotFoundException) { }
+            } catch (ex: ActivityNotFoundException) {
+            }
         }
-
+/*
         //should have a
         //calculate bmr button
         mCalculateBMRButton!!.setOnClickListener {
@@ -212,8 +296,51 @@ class UserCreateFragment : Fragment() {
                     "Your daily target calorie intake is: " + mBMRVal.toString()
             } catch (e: Exception) { }
         }
-
+*/
         return view
+
+    }
+
+    private fun makeCitySpinner(jobj: JSONObject)
+    {
+        /////
+
+        var cities = listOf("Select a Country")
+
+        if(mCountry != null)
+        {
+            var citiesJ = jobj.getJSONArray(mCountry)// as Array<String> //is a json array
+
+            var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
+
+            //print(cities.toString())
+            var sort2 = citiesS.toList().sorted()
+
+            cities = sort2
+        }
+
+        /////
+
+        //do this as method -> called when selected
+
+        val cityAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(
+                requireContext(), android.R.layout.simple_spinner_dropdown_item,
+                cities
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                mCitySpinner!!.adapter = adapter
+            }
+        mCitySpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            // add an anonymous listener class to track changes to spinner's value
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                mCity = parent.getItemAtPosition(pos) as String
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                mCity = null
+            }
+        }
     }
 
     private fun calcBMR(): String {
