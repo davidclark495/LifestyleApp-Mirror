@@ -2,20 +2,24 @@ package com.thegoodlife
 
 
 import android.content.ActivityNotFoundException
-import android.os.Build
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import java.lang.ClassCastException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.round
 
 
@@ -23,6 +27,9 @@ import kotlin.math.round
  *
  */
 class UserCreateFragment : Fragment() {
+
+    private var mHomeIntent: Intent? = null
+
     // the host Activity, must support an interface/callback
     private var mUserReceiver: ReceiveUserInterface? = null
 
@@ -67,6 +74,9 @@ class UserCreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //gonna be more complicated than that
+        mHomeIntent = Intent(activity, HomepageActivity::class.java)
+
         val view = inflater.inflate(R.layout.fragment_user_create, container, false)
         // Get views
         mNameET = view.findViewById(R.id.et_name) as EditText
@@ -159,6 +169,17 @@ class UserCreateFragment : Fragment() {
                 mProfilePhotoBitmap
             )
             mUserReceiver!!.receiveUserProfile(user)
+            //should save this to a file for later or just preserve in instancestate
+
+            mHomeIntent!!.putExtra("bmr", calcBMR())
+            startActivity(mHomeIntent)
+/*
+            val intent = Intent()
+            intent.setClass(activity!!, other::class.java)
+            //pass thumbnail
+            intent.putExtra("path", "TODO")
+            activity!!.startActivity(intent)
+*/
         }
         mCameraButton!!.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -167,8 +188,13 @@ class UserCreateFragment : Fragment() {
             } catch (ex: ActivityNotFoundException) { }
         }
 
+        //should have a
         //calculate bmr button
         mCalculateBMRButton!!.setOnClickListener {
+
+            //val bmr = calcBMR()
+
+            //encapsulated in method
             val kgWeight: Double = mWeightNumPicker!!.value * 0.45359237
             val cmHeight: Double = mHeightNumPicker!!.value * 2.54
             if (mSexStr == "Male") {
@@ -190,18 +216,71 @@ class UserCreateFragment : Fragment() {
         return view
     }
 
+    private fun calcBMR(): String {
+        val kgWeight: Double = mWeightNumPicker!!.value * 0.45359237
+        val cmHeight: Double = mHeightNumPicker!!.value * 2.54
+        if (mSexStr == "Male") {
+            mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) + 5))
+        }
+        else if (mSexStr == "Female") {
+            mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) - 161))
+        }
+        else { // other
+            mBMRVal = 0.0
+        }
+        //try display if valid bmr
+
+        return mBMRVal.toString()
+        /*
+        try {
+            mCalculateBMRText!!.text =
+                "Your daily target calorie intake is: " + mBMRVal.toString()
+        } catch (e: Exception) { }
+        */
+
+    }
+
+    private fun saveImage(finalBitmap: Bitmap?): String {
+        val root = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val myDir = File("$root/saved_images")
+        myDir.mkdirs()
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val fname = "Thumbnail_$timeStamp.jpg"
+        val file = File(myDir, fname)
+        if (file.exists()) file.delete()
+        try {
+            val out = FileOutputStream(file)
+            finalBitmap!!.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            out.flush()
+            out.close()
+            //Toast.makeText(this, "file saved!", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return file.absolutePath
+
+    }
+
+        private val isExternalStorageWritable: Boolean
+        get() {
+            val state = Environment.getExternalStorageState()
+            return Environment.MEDIA_MOUNTED == state
+        }
 
 
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                if(Build.VERSION.SDK_INT >= 33) {
-                    mProfilePhotoBitmap = result.data!!.getParcelableExtra("data", Bitmap::class.java)
+                val extras = result.data!!.extras
+                mProfilePhotoBitmap = extras!!["data"] as Bitmap?
+
+                //Open a file and write to it
+                if (isExternalStorageWritable) {
+                    val filePathString = saveImage(mProfilePhotoBitmap)
+                    mHomeIntent!!.putExtra("imagePath", filePathString)
                 } else {
-                    mProfilePhotoBitmap = result.data!!.getParcelableExtra<Bitmap>("data")
-                }
-                mProfilePhotoView!!.setImageBitmap(mProfilePhotoBitmap)
-            }
+                    //Toast.makeText(this, "External storage not writable.", Toast.LENGTH_SHORT).show()
+                }    }
         }
 
     // Misc. Fragment Lifecycle
