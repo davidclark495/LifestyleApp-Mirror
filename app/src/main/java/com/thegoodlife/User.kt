@@ -13,6 +13,8 @@ class User : Parcelable{
     private var mActivityLevel: String? = null
     private var mProfilePic: Bitmap? = null
 
+    //update for location(?), use in data modification / loading frag
+
     constructor(
         name: String?,
         age: Int?,

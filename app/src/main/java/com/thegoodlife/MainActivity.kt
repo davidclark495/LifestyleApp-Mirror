@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
 
         //Replace the fragment container
         val fTrans = supportFragmentManager.beginTransaction()
-        fTrans.replace(R.id.fl_main_frag_container, userCreateFragment, "userCreat_frag")
+        fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
         fTrans.commit()
     }
 
@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
             ).show()
         } catch (e: Exception) {}
     }
+
+
 
     companion object {
         private var mUser: User? = null
