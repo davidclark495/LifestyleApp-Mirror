@@ -5,24 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Spinner
-        android:id="@+id/spinner_city"
-        android:layout_width="175dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/spinner_country"
-        app:layout_constraintTop_toBottomOf="@+id/number_age" />
-
     <ImageView
         android:id="@+id/profile_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_create_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -38,25 +31,26 @@
         android:ems="10"
         android:hint="Enter Name"
         android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="@+id/tv_create_profile"
+        app:layout_constraintTop_toBottomOf="@+id/tv_create_profile" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="8"
+        android:labelFor="@+id/number_age"
         android:text="Age"
         app:layout_constraintBottom_toTopOf="@+id/number_age"
         app:layout_constraintEnd_toEndOf="@+id/number_age"
         app:layout_constraintStart_toStartOf="@+id/number_age" />
 
     <NumberPicker
-        android:descendantFocusability="blocksDescendants"
         android:id="@+id/number_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_weight="2"
+        android:descendantFocusability="blocksDescendants"
         app:layout_constraintEnd_toStartOf="@+id/number_weight"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,19 +60,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="8"
+        android:labelFor="@+id/number_weight"
         android:text="Weight"
         app:layout_constraintBottom_toTopOf="@+id/number_weight"
         app:layout_constraintEnd_toEndOf="@+id/number_weight"
-        app:layout_constraintStart_toEndOf="@+id/number_age"
         app:layout_constraintStart_toStartOf="@+id/number_weight" />
 
     <NumberPicker
-        android:descendantFocusability="blocksDescendants"
         android:id="@+id/number_weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_weight="2"
+        android:descendantFocusability="blocksDescendants"
         app:layout_constraintEnd_toStartOf="@+id/number_height"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/number_age"
@@ -88,19 +82,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="8"
+        android:labelFor="@+id/number_height"
         android:text="Height"
         app:layout_constraintBottom_toTopOf="@+id/number_height"
         app:layout_constraintEnd_toEndOf="@+id/number_height"
-        app:layout_constraintHorizontal_bias="0.608"
         app:layout_constraintStart_toStartOf="@+id/number_height" />
 
     <NumberPicker
-        android:descendantFocusability="blocksDescendants"
         android:id="@+id/number_height"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_weight="2"
+        android:descendantFocusability="blocksDescendants"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/number_weight"
@@ -115,15 +109,6 @@
         app:layout_constraintEnd_toEndOf="@+id/spinner_sex"
         app:layout_constraintStart_toStartOf="@+id/spinner_sex" />
 
-    <TextView
-        android:id="@+id/tv_sex_label2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Country"
-        app:layout_constraintBottom_toTopOf="@+id/spinner_country"
-        app:layout_constraintEnd_toEndOf="@+id/spinner_country"
-        app:layout_constraintStart_toStartOf="@+id/spinner_country" />
-
     <Spinner
         android:id="@+id/spinner_sex"
         android:layout_width="125dp"
@@ -132,6 +117,16 @@
         app:layout_constraintEnd_toStartOf="@+id/spinner_activity_level"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/number_age" />
+
+
+    <TextView
+        android:id="@+id/tv_country_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Country"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_country"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_country"
+        app:layout_constraintStart_toStartOf="@+id/spinner_country" />
 
     <Spinner
         android:id="@+id/spinner_country"
@@ -151,8 +146,16 @@
         app:layout_constraintEnd_toEndOf="@+id/spinner_activity_level"
         app:layout_constraintStart_toStartOf="@+id/spinner_activity_level" />
 
+    <Spinner
+        android:id="@+id/spinner_activity_level"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spinner_sex"
+        app:layout_constraintTop_toTopOf="@+id/spinner_sex" />
+
     <TextView
-        android:id="@+id/tv_activity_level_label2"
+        android:id="@+id/tv_city_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="City"
@@ -161,32 +164,31 @@
         app:layout_constraintStart_toStartOf="@+id/spinner_city" />
 
     <Spinner
-        android:id="@+id/spinner_activity_level"
-        android:layout_width="125dp"
+        android:id="@+id/spinner_city"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/spinner_sex"
-        app:layout_constraintTop_toBottomOf="@+id/number_age" />
-
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_camera"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toEndOf="@+id/spinner_country"
+        app:layout_constraintTop_toBottomOf="@+id/tv_country_label" />
 
     <Button
         android:id="@+id/button_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginTop="32dp"
         android:text="Take Profile Photo"
         app:layout_constraintBottom_toTopOf="@+id/button_save"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_activity_level"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_country"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="88dp"
+        android:text="Save Profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_camera"
         tools:layout_editor_absoluteX="0dp" />
 
 
