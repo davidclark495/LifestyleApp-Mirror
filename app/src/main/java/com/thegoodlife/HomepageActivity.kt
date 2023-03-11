@@ -30,29 +30,25 @@ class HomepageActivity : AppCompatActivity() {
         mWeatherButton = findViewById(R.id.weatherButton)
         mBmrText = findViewById(R.id.bmrBox)
 
-
         //listeners should handle activity switching
         mProfPic!!.setOnClickListener {
             Toast.makeText(this, "go to profile activity", Toast.LENGTH_SHORT).show()
         }
-
         mHikeButton!!.setOnClickListener {
             Toast.makeText(this, "go to hike activity", Toast.LENGTH_SHORT).show()
         }
-
         mWeatherButton!!.setOnClickListener {
             Toast.makeText(this, "go to weather activity", Toast.LENGTH_SHORT).show()
         }
 
         val receivedIntent = intent
 
-        var user: User?
+        val user: User?
         if(Build.VERSION.SDK_INT >= 33) {
                 user = receivedIntent.getParcelableExtra("User", User::class.java)
             } else {
                 user = receivedIntent.getParcelableExtra("User")
             }
-
         val imagePath = user?.profile_pic_file_path
         val thumbnailImage = BitmapFactory.decodeFile(imagePath)
         if (thumbnailImage != null) {

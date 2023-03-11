@@ -260,9 +260,20 @@ class UserCreateFragment : Fragment() {
             )
             mUserReceiver!!.receiveUserProfile(user)
 
-            var homeIntent = Intent(activity, HomepageActivity::class.java)
-            homeIntent.putExtra("User", user)
-            startActivity(homeIntent)
+            // launch a new Homepage activity
+//            var homeIntent = Intent(activity, HomepageActivity::class.java)
+//            homeIntent.putExtra("User", user)
+//            startActivity(homeIntent)
+
+            // replace this fragment w/ a new Homepage fragment
+            val homepageFragment = HomepageFragment()
+            val args = Bundle()
+            args.putParcelable("User", user)
+            homepageFragment.setArguments(args)
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
+            transaction?.disallowAddToBackStack()
+            transaction?.commit()
         }
         mCameraButton!!.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
