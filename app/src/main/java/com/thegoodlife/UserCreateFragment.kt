@@ -29,13 +29,11 @@ import kotlin.math.round
  */
 class UserCreateFragment : Fragment() {
 
-    private var mHomeIntent: Intent? = null
     private var mCountrySpinner: Spinner? = null
     private var mCitySpinner: Spinner? = null
     private var countryList: List<String>? = null
     private var mCountry: String? = null
     private var mCity: String? = null
-    //private var cityList: Array<String>? = null
 
     // the host Activity, must support an interface/callback
     private var mUserReceiver: ReceiveUserInterface? = null
@@ -51,6 +49,7 @@ class UserCreateFragment : Fragment() {
     private var mActivityLevelStr: String? = null
     private var mProfilePhotoView: ImageView? = null
     private var mProfilePhotoBitmap: Bitmap? = null
+    private var mProfilePhotoFilePath: String? = null
 
     // views for misc. UI
     private var mSaveButton: Button? = null
@@ -62,6 +61,10 @@ class UserCreateFragment : Fragment() {
     // Callback interface
     interface ReceiveUserInterface {
         fun receiveUserProfile(data: User?)
+    }
+
+    interface GoToHomepageInterface {
+        fun goToHomepage()
     }
 
     // attach to parent Activity, Activity must implement ReceiveUserInterface
@@ -81,7 +84,6 @@ class UserCreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mHomeIntent = Intent(activity, HomepageActivity::class.java)
         var input = resources.openRawResource(R.raw.country_city)
         var jstr = input.bufferedReader().use { it.readText() }
         input.close()
@@ -118,7 +120,7 @@ class UserCreateFragment : Fragment() {
         mAgeNumPicker!!.value = 18
         mAgeNumPicker!!.wrapSelectorWheel = false
         mAgeNumPicker!!.setOnLongPressUpdateInterval(100)
-        // weightSS
+        // weight
         mWeightNumPicker!!.minValue = 0
         mWeightNumPicker!!.maxValue = 1000
         mWeightNumPicker!!.value = 150
@@ -141,7 +143,7 @@ class UserCreateFragment : Fragment() {
         mWeightNumPicker!!.setOnClickListener {
             ;
         }
-
+        // height
         mHeightNumPicker!!.minValue = 0
         mHeightNumPicker!!.maxValue = 200
         mHeightNumPicker!!.value = 60
@@ -154,7 +156,6 @@ class UserCreateFragment : Fragment() {
                 it % 12
             )
         }
-
         try {
             val method = mHeightNumPicker!!.javaClass.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
             method.setAccessible(true)
@@ -253,17 +254,15 @@ class UserCreateFragment : Fragment() {
                 mSexStr,
                 mActivityLevelStr,
                 mProfilePhotoBitmap,
-                /*
-                //User.kt : change constructor, etc.
-                //mCountry,
-                //mCity
-                 */
+                mProfilePhotoFilePath,
+                mCountry,
+                mCity
             )
             mUserReceiver!!.receiveUserProfile(user)
 
-            mHomeIntent!!.putExtra("bmr", calcBMR())
-            startActivity(mHomeIntent)
-
+            var homeIntent = Intent(activity, HomepageActivity::class.java)
+            homeIntent.putExtra("User", user)
+            startActivity(homeIntent)
         }
         mCameraButton!!.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -273,26 +272,10 @@ class UserCreateFragment : Fragment() {
             }
         }
 /*
-        //should have a
-        //calculate bmr button
+        //should have a calculate bmr button
         mCalculateBMRButton!!.setOnClickListener {
-
-            //val bmr = calcBMR()
-
-            //encapsulated in method
-            val kgWeight: Double = mWeightNumPicker!!.value * 0.45359237
-            val cmHeight: Double = mHeightNumPicker!!.value * 2.54
-            if (mSexStr == "Male") {
-                mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) + 5))
-            }
-            else if (mSexStr == "Female") {
-                mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) - 161))
-            }
-            else { // other
-                mBMRVal = 0.0
-            }
-            //try display if valid bmr
-            try {
+            val bmr = calcBMR()
+            try {//try display if valid bmr
                 mCalculateBMRText!!.text =
                     "Your daily target calorie intake is: " + mBMRVal.toString()
             } catch (e: Exception) { }
@@ -349,10 +332,10 @@ class UserCreateFragment : Fragment() {
         else { // other
             mBMRVal = 0.0
         }
-        //try display if valid bmr
 
         return mBMRVal.toString()
         /*
+        //try display if valid bmr
         try {
             mCalculateBMRText!!.text =
                 "Your daily target calorie intake is: " + mBMRVal.toString()
@@ -382,8 +365,8 @@ class UserCreateFragment : Fragment() {
 
     }
 
-        private val isExternalStorageWritable: Boolean
-        get() {
+    private val isExternalStorageWritable: Boolean
+    get() {
             val state = Environment.getExternalStorageState()
             return Environment.MEDIA_MOUNTED == state
         }
@@ -398,7 +381,7 @@ class UserCreateFragment : Fragment() {
                 //Open a file and write to it
                 if (isExternalStorageWritable) {
                     val filePathString = saveImage(mProfilePhotoBitmap)
-                    mHomeIntent!!.putExtra("imagePath", filePathString)
+                    this.mProfilePhotoFilePath = filePathString
                 } else {
                     //Toast.makeText(this, "External storage not writable.", Toast.LENGTH_SHORT).show()
                 }    }

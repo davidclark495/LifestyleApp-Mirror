@@ -10,8 +10,6 @@
     <androidx.fragment.app.FragmentContainerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fl_frag_container"
-        android:name="com.thegoodlife.UserCreateFragment"
-        tools:layout="@layout/fragment_user_create" />         <!-- ? -->
+        android:id="@+id/fl_frag_container"/>         <!-- ? -->
 
 </LinearLayout>

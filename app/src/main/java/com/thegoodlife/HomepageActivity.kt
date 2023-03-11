@@ -10,6 +10,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
+
 
 class HomepageActivity : AppCompatActivity() {
 
@@ -20,6 +22,7 @@ class HomepageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_homepage)
 
         mProfPic = findViewById(R.id.profButton)
@@ -43,13 +46,18 @@ class HomepageActivity : AppCompatActivity() {
 
         val receivedIntent = intent
 
-        val imagePath = receivedIntent.getStringExtra("imagePath")
+        var user: User?
+        if(Build.VERSION.SDK_INT >= 33) {
+                user = receivedIntent.getParcelableExtra("User", User::class.java)
+            } else {
+                user = receivedIntent.getParcelableExtra("User")
+            }
 
+        val imagePath = user?.profile_pic_file_path
         val thumbnailImage = BitmapFactory.decodeFile(imagePath)
         if (thumbnailImage != null) {
             mProfPic!!.setImageBitmap(thumbnailImage)
         }
-        val bmr = receivedIntent.getStringExtra("bmr")
-        mBmrText!!.text = bmr
+        mBmrText!!.text = user?.bmr?.toString()
     }
 }
