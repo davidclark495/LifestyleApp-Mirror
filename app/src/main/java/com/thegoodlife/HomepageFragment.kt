@@ -14,7 +14,11 @@ import android.widget.Toast
 /**
  * A simple [Fragment] subclass.
  */
+
+private const val ARG_USER = "User"
 class HomepageFragment : Fragment() {
+
+    private var mUser: User? = null
 
     private var mProfPic: ImageButton? = null
     private var mHikeButton: ImageButton? = null
@@ -22,6 +26,13 @@ class HomepageFragment : Fragment() {
     private var mBmrText: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            if(Build.VERSION.SDK_INT >= 33) {
+                mUser = it.getParcelable(ARG_USER, User::class.java)
+            } else {
+                mUser = it.getParcelable(ARG_USER)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -31,35 +42,54 @@ class HomepageFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_homepage, container, false)
 
-
         mProfPic = view.findViewById(R.id.profButton)
         mHikeButton = view.findViewById(R.id.hikeButton)
         mWeatherButton = view.findViewById(R.id.weatherButton)
         mBmrText = view.findViewById(R.id.bmrBox)
 
-        //listeners should handle activity switching
+        //listeners should handle fragment switching
         mProfPic!!.setOnClickListener {
-            Toast.makeText(activity, "go to profile activity", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "go to profile fragment", Toast.LENGTH_SHORT).show()
+            // make new fragment
+            val userFragment = UserCreateFragment()
+            val args = Bundle()
+            args.putParcelable("User", mUser)
+            userFragment.setArguments(args)
+            // switch to fragment
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.fl_frag_container, userFragment, "userCreate_frag")
+            transaction?.addToBackStack(null)
+            transaction?.commit()
         }
         mHikeButton!!.setOnClickListener {
-            Toast.makeText(activity, "go to hike activity", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "go to hike fragment", Toast.LENGTH_SHORT).show()
+            val hikeFragment = HikeFragment()
+            val args = Bundle()
+            args.putParcelable("User", mUser)
+            hikeFragment.setArguments(args)
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.fl_frag_container, hikeFragment, "hike_frag")
+            transaction?.addToBackStack(null)
+            transaction?.commit()
         }
         mWeatherButton!!.setOnClickListener {
-            Toast.makeText(activity, "go to weather activity", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "go to weather fragment", Toast.LENGTH_SHORT).show()
+            val weatherFragment = WeatherFragment()
+            val args = Bundle()
+            args.putParcelable("User", mUser)
+            weatherFragment.setArguments(args)
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.fl_frag_container, weatherFragment, "weather_frag")
+            transaction?.addToBackStack(null)
+            transaction?.commit()
         }
 
-        val user: User?
-        if(Build.VERSION.SDK_INT >= 33) {
-            user = arguments?.getParcelable("User", User::class.java)
-        } else {
-            user = arguments?.getParcelable("User")
-        }
-        val imagePath = user?.profile_pic_file_path
+        val imagePath = mUser?.profile_pic_file_path
         val thumbnailImage = BitmapFactory.decodeFile(imagePath)
         if (thumbnailImage != null) {
             mProfPic!!.setImageBitmap(thumbnailImage)
         }
-        mBmrText!!.text = user?.bmr?.toString()
+        mBmrText!!.text = mUser?.bmr?.toString()
         return view
     }
 

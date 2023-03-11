@@ -13,4 +13,6 @@
         <item>Low</item>
         <item>Potato</item>
     </string-array>
+    <string name="title_weather_fragment">Weather</string>
+    <string name="title_hike_fragment">Hike</string>
 </resources>

@@ -260,11 +260,6 @@ class UserCreateFragment : Fragment() {
             )
             mUserReceiver!!.receiveUserProfile(user)
 
-            // launch a new Homepage activity
-//            var homeIntent = Intent(activity, HomepageActivity::class.java)
-//            homeIntent.putExtra("User", user)
-//            startActivity(homeIntent)
-
             // replace this fragment w/ a new Homepage fragment
             val homepageFragment = HomepageFragment()
             val args = Bundle()
@@ -272,7 +267,7 @@ class UserCreateFragment : Fragment() {
             homepageFragment.setArguments(args)
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
-            transaction?.disallowAddToBackStack()
+            transaction?.addToBackStack(null)
             transaction?.commit()
         }
         mCameraButton!!.setOnClickListener {
@@ -329,30 +324,6 @@ class UserCreateFragment : Fragment() {
                 mCity = null
             }
         }
-    }
-
-    private fun calcBMR(): String {
-        val kgWeight: Double = mWeightNumPicker!!.value * 0.45359237
-        val cmHeight: Double = mHeightNumPicker!!.value * 2.54
-        if (mSexStr == "Male") {
-            mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) + 5))
-        }
-        else if (mSexStr == "Female") {
-            mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAgeNumPicker!!.value) - 161))
-        }
-        else { // other
-            mBMRVal = 0.0
-        }
-
-        return mBMRVal.toString()
-        /*
-        //try display if valid bmr
-        try {
-            mCalculateBMRText!!.text =
-                "Your daily target calorie intake is: " + mBMRVal.toString()
-        } catch (e: Exception) { }
-        */
-
     }
 
     private fun saveImage(finalBitmap: Bitmap?): String {
