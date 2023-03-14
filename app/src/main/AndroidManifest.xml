@@ -27,10 +27,5 @@
                 android:value="" />
         </activity>
 
-        <activity
-            android:name=".HomepageActivity"
-            >
-        </activity>
-
     </application>
 </manifest>
