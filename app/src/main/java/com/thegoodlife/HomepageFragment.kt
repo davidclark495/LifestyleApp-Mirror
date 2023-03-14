@@ -18,7 +18,7 @@ import android.widget.Toast
 private const val ARG_USER = "User"
 class HomepageFragment : Fragment() {
 
-    private var mUser: User? = null
+    private var mUser: UserData? = null
 
     private var mProfPic: ImageButton? = null
     private var mHikeButton: ImageButton? = null
@@ -28,7 +28,7 @@ class HomepageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if(Build.VERSION.SDK_INT >= 33) {
-                mUser = it.getParcelable(ARG_USER, User::class.java)
+                mUser = it.getParcelable(ARG_USER, UserData::class.java)
             } else {
                 mUser = it.getParcelable(ARG_USER)
             }
@@ -61,6 +61,7 @@ class HomepageFragment : Fragment() {
             transaction?.addToBackStack(null)
             transaction?.commit()
         }
+
         mHikeButton!!.setOnClickListener {
             Toast.makeText(activity, "go to hike fragment", Toast.LENGTH_SHORT).show()
             val hikeFragment = HikeFragment()
@@ -72,6 +73,7 @@ class HomepageFragment : Fragment() {
             transaction?.addToBackStack(null)
             transaction?.commit()
         }
+
         mWeatherButton!!.setOnClickListener {
             Toast.makeText(activity, "go to weather fragment", Toast.LENGTH_SHORT).show()
             val weatherFragment = WeatherFragment()

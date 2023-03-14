@@ -1,11 +1,7 @@
 package com.thegoodlife
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -43,9 +39,9 @@ class HomepageActivity : AppCompatActivity() {
 
         val receivedIntent = intent
 
-        val user: User?
+        val user: UserData?
         if(Build.VERSION.SDK_INT >= 33) {
-                user = receivedIntent.getParcelableExtra("User", User::class.java)
+                user = receivedIntent.getParcelableExtra("User", UserData::class.java)
             } else {
                 user = receivedIntent.getParcelableExtra("User")
             }

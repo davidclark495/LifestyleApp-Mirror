@@ -7,7 +7,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import kotlin.math.round
 
-class User : Parcelable{
+class UserData : Parcelable{
     private var mName: String? = null
     private var mAge: Int? = null
     private var mWeight: Int? = null    // in pounds
@@ -132,11 +132,11 @@ class User : Parcelable{
         return 0
     }
 
-    companion object CREATOR : Creator<User> {
-        override fun createFromParcel(parcel: Parcel): User {
-            return User(parcel)
+    companion object CREATOR : Creator<UserData> {
+        override fun createFromParcel(parcel: Parcel): UserData {
+            return UserData(parcel)
         }
-        override fun newArray(size: Int): Array<User?> {
+        override fun newArray(size: Int): Array<UserData?> {
             return arrayOfNulls(size)
         }
     }

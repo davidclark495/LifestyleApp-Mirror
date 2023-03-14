@@ -21,7 +21,6 @@ import java.io.FileOutputStream
 import java.lang.reflect.InvocationTargetException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.round
 
 
 /**
@@ -53,18 +52,14 @@ class UserCreateFragment : Fragment() {
 
     // views for misc. UI
     private var mSaveButton: Button? = null
-    private var mCameraButton: Button? = null
+    private var mCameraButton: ImageButton? = null
     private var mCalculateBMRText: TextView? = null
     private var mCalculateBMRButton: Button? = null
     private var mBMRVal: Double? = null
 
     // Callback interface
     interface ReceiveUserInterface {
-        fun receiveUserProfile(data: User?)
-    }
-
-    interface GoToHomepageInterface {
-        fun goToHomepage()
+        fun receiveUserProfile(data: UserData?)
     }
 
     // attach to parent Activity, Activity must implement ReceiveUserInterface
@@ -76,8 +71,6 @@ class UserCreateFragment : Fragment() {
             throw ClassCastException("$context must implement UserCreateFragment.ReceiveUserInterface")
         }
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,7 +102,7 @@ class UserCreateFragment : Fragment() {
         mActivityLevelSpinner = view.findViewById(R.id.spinner_activity_level) as Spinner
         mProfilePhotoView = view.findViewById(R.id.profile_image_view) as ImageView
         mSaveButton = view.findViewById(R.id.button_save) as Button
-        mCameraButton = view.findViewById(R.id.button_camera) as Button
+        mCameraButton = view.findViewById(R.id.button_camera) as ImageButton
         //mCalculateBMRButton = view.findViewById(R.id.button_bmr) as Button
         //mCalculateBMRText = view.findViewById(R.id.bmr_text) as TextView
 
@@ -246,7 +239,7 @@ class UserCreateFragment : Fragment() {
         // save button
         mSaveButton!!.setOnClickListener {
             // build user from fields & trigger ReceiveUserInterface Callback
-            val user = User(
+            val user = UserData(
                 mNameET!!.text.toString(),
                 mAgeNumPicker!!.value,
                 mWeightNumPicker!!.value,
@@ -270,7 +263,7 @@ class UserCreateFragment : Fragment() {
             transaction?.addToBackStack(null)
             transaction?.commit()
         }
-        mCameraButton!!.setOnClickListener {
+        mCameraButton?.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             try {
                 cameraLauncher.launch(cameraIntent)
@@ -298,11 +291,8 @@ class UserCreateFragment : Fragment() {
         if(mCountry != null)
         {
             var citiesJ = jobj.getJSONArray(mCountry)// as Array<String> //is a json array
-
             var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
-
             var sort2 = citiesS.toList().sorted()
-
             cities = sort2
         }
 

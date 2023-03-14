@@ -23,26 +23,14 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         fTrans.commit()
     }
 
-    override fun receiveUserProfile(data: User?) {
+    override fun receiveUserProfile(data: UserData?) {
         mUser = data
-        // SANITY CHECK: try outputting a sample of User data
-        try {
-            Toast.makeText(
-                this,
-                "Received User data: %s, %d, %s, %s".format(
-                        mUser!!.name,
-                        mUser!!.age,
-                        mUser!!.sex,
-                        if(mUser!!.profile_pic != null) "(has pic)" else "(no pic)"
-            ),
-                Toast.LENGTH_SHORT
-            ).show()
-        } catch (e: Exception) {}
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
     }
 
 
 
     companion object {
-        private var mUser: User? = null
+        private var mUser: UserData? = null
     }
 }

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,21 +24,23 @@
         android:id="@+id/tv_create_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="Create Profile"
+        app:layout_constraintBottom_toTopOf="@+id/et_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_top" />
 
     <EditText
         android:id="@+id/et_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Enter Name"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/number_age"
         app:layout_constraintStart_toStartOf="@+id/tv_create_profile"
-        app:layout_constraintTop_toBottomOf="@+id/tv_create_profile" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_top"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="9"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,6 +59,7 @@
         android:layout_marginTop="40dp"
         android:layout_weight="2"
         android:descendantFocusability="blocksDescendants"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_sex"
         app:layout_constraintEnd_toStartOf="@+id/number_weight"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +88,7 @@
         app:layout_constraintTop_toTopOf="@+id/number_age" />
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="8"
@@ -109,15 +119,17 @@
         app:layout_constraintEnd_toEndOf="@+id/spinner_sex"
         app:layout_constraintStart_toStartOf="@+id/spinner_sex" />
 
+
     <Spinner
         android:id="@+id/spinner_sex"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_country"
         app:layout_constraintEnd_toStartOf="@+id/spinner_activity_level"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/number_age" />
-
 
     <TextView
         android:id="@+id/tv_country_label"
@@ -132,10 +144,12 @@
         android:id="@+id/spinner_country"
         android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_save"
         app:layout_constraintEnd_toStartOf="@+id/spinner_city"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number_age" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_sex" />
 
     <TextView
         android:id="@+id/tv_activity_level_label"
@@ -169,27 +183,44 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner_country"
-        app:layout_constraintTop_toBottomOf="@+id/tv_country_label" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_country_label"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Take Profile Photo"
-        app:layout_constraintBottom_toTopOf="@+id/button_save"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_country"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="?android:attr/listChoiceIndicatorSingle"
+        android:backgroundTint="#7744ee"
+        app:layout_constraintBottom_toBottomOf="@+id/et_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/et_name"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        app:layout_constraintHorizontal_weight="1"
+        app:tint="#7744ee" />
 
     <Button
         android:id="@+id/button_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="88dp"
         android:text="Save Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_camera"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_country"
         tools:layout_editor_absoluteX="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="3dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

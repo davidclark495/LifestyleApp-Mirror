@@ -13,12 +13,12 @@ private const val ARG_USER = "User"
  * A simple [Fragment] subclass.
  */
 class HikeFragment : Fragment() {
-    private var mUser: User? = null
+    private var mUser: UserData? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if(Build.VERSION.SDK_INT >= 33) {
-                mUser = it.getParcelable(ARG_USER, User::class.java)
+                mUser = it.getParcelable(ARG_USER, UserData::class.java)
             } else {
                 mUser = it.getParcelable(ARG_USER)
             }
