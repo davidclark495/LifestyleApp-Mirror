@@ -15,7 +15,7 @@ import java.util.concurrent.Executors
 import androidx.core.os.HandlerCompat
 import android.os.Looper
 import org.json.JSONException
-
+import kotlin.math.roundToInt
 
 
 private const val ARG_USER = "User"
@@ -33,6 +33,7 @@ class WeatherFragment : Fragment() {
     private var mPressureTV: TextView? = null
     private var mHumidTV: TextView? = null
     private var mSubmitButton: Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -60,32 +61,26 @@ class WeatherFragment : Fragment() {
         mSubmitButton!!.setOnClickListener {//Get the string from the edit text and sanitize the input
             val inputLocation = mLocationET!!.text.toString().replace(' ', '&')
             loadWeatherData(inputLocation)
-            debugToast("submit pressed...")
         }
         return view
     }
 
     private fun loadWeatherData(location: String) {
+        Toast.makeText(requireContext(), "Loading weather data...", Toast.LENGTH_SHORT).show()
         mFetchWeatherTask.execute(location)
-        debugToast("loading weather data...")
     }
 
     /**
      *  updates mWeatherData and recalculates display values
      */
     fun updateWeatherData(data: WeatherData?){
-        Toast.makeText(requireContext(), "updating weather data...", Toast.LENGTH_SHORT).show()
         mWeatherData = data
         mTempTV!!.text =
-            "" + Math.round(mWeatherData?.temperature!!.temp - 273.15) + " C"
+            "" + (mWeatherData?.temperature!!.temp - 273.15).roundToInt() + " C"
         mHumidTV!!.text =
             "" + mWeatherData?.currentCondition!!.humidity + "%"
         mPressureTV!!.text =
             "" + mWeatherData?.currentCondition!!.pressure + " hPa"
-    }
-
-    fun debugToast(message: String){
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     // Background Thread Worker //

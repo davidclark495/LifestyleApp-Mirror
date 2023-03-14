@@ -1,93 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".WeatherFragment">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_weather_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_weather_fragment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".WeatherFragment">
 
-    <EditText
-        android:id="@+id/et_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Location"
-        app:layout_constraintEnd_toStartOf="@+id/button_submit"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_weather_title" />
+        <TextView
+            android:id="@+id/tv_weather_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_weather_fragment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="@+id/et_location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_location"
-        app:layout_constraintTop_toTopOf="@+id/et_location" />
+        <EditText
+            android:id="@+id/et_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:ems="10"
+            android:inputType="text"
+            android:text="Location"
+            app:layout_constraintEnd_toStartOf="@+id/button_submit"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_weather_title" />
 
-    <TextView
-        android:id="@+id/tv_temperature_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="Temperature"
-        app:layout_constraintStart_toStartOf="@+id/et_location"
-        app:layout_constraintTop_toBottomOf="@+id/et_location" />
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            app:layout_constraintBottom_toBottomOf="@+id/et_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/et_location"
+            app:layout_constraintTop_toTopOf="@+id/et_location" />
 
-    <TextView
-        android:id="@+id/tv_pressure_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Pressure"
-        app:layout_constraintStart_toStartOf="@+id/et_location"
-        app:layout_constraintTop_toBottomOf="@+id/tv_temperature_label" />
+        <TextView
+            android:id="@+id/tv_temperature_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="Temperature"
+            app:layout_constraintStart_toStartOf="@+id/et_location"
+            app:layout_constraintTop_toBottomOf="@+id/et_location" />
 
-    <TextView
-        android:id="@+id/tv_humidity_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Humidity"
-        app:layout_constraintStart_toStartOf="@+id/et_location"
-        app:layout_constraintTop_toBottomOf="@+id/tv_pressure_label" />
+        <TextView
+            android:id="@+id/tv_pressure_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Pressure"
+            app:layout_constraintStart_toStartOf="@+id/tv_temperature_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_temperature_label" />
 
-    <TextView
-        android:id="@+id/tv_temperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="[Submit to see Data]"
-        app:layout_constraintStart_toEndOf="@+id/tv_temperature_label"
-        app:layout_constraintTop_toTopOf="@+id/tv_temperature_label" />
+        <TextView
+            android:id="@+id/tv_humidity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Humidity"
+            app:layout_constraintStart_toStartOf="@+id/tv_pressure_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pressure_label" />
 
-    <TextView
-        android:id="@+id/tv_pressure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="[Submit to see Data]"
-        app:layout_constraintStart_toEndOf="@+id/tv_pressure_label"
-        app:layout_constraintTop_toTopOf="@+id/tv_pressure_label" />
+        <TextView
+            android:id="@+id/tv_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Submit to see Data]"
+            app:layout_constraintEnd_toEndOf="@+id/button_submit"
+            app:layout_constraintTop_toTopOf="@+id/tv_temperature_label" />
 
-    <TextView
-        android:id="@+id/tv_humidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="[Submit to see Data]"
-        app:layout_constraintStart_toEndOf="@+id/tv_humidity_label"
-        app:layout_constraintTop_toTopOf="@+id/tv_humidity_label" />
+        <TextView
+            android:id="@+id/tv_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Submit to see Data]"
+            app:layout_constraintEnd_toEndOf="@+id/tv_temperature"
+            app:layout_constraintTop_toTopOf="@+id/tv_pressure_label" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tv_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Submit to see Data]"
+            app:layout_constraintEnd_toEndOf="@+id/tv_pressure"
+            app:layout_constraintTop_toTopOf="@+id/tv_humidity_label" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
