@@ -31,6 +31,7 @@ class UserCreateFragment : Fragment() {
     private var mCountrySpinner: Spinner? = null
     private var mCitySpinner: Spinner? = null
     private var countryList: List<String>? = null
+    private var cityList: List<String>? = null
     private var mCountry: String? = null
     private var mCity: String? = null
 
@@ -237,22 +238,38 @@ class UserCreateFragment : Fragment() {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 mCountrySpinner!!.adapter = adapter
             }
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = countryList //arrayOf(countryList) as Array<String> //classcast?
+            var idx = arr!!.indexOf(user?.country)
+            mCountrySpinner!!.setSelection(idx)
+            mCountry = user!!.country
+            makeCitySpinner(jobj)//sghetti
+            var arr2 = cityList //as Array<String> //classcast?
+            var idx2 = arr2!!.indexOf(user?.city)
+            mCitySpinner!!.setSelection(idx2)
+            mCity = user!!.city
+        }
         mCountrySpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mCountry = parent.getItemAtPosition(pos) as String
                 makeCitySpinner(jobj)//sghetti
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                mCountry = null
                 if(arguments != null)
                 {
                     user = requireArguments().getParcelable("User")
-                    //error
-                    mCountry = user!!.country
-                    makeCitySpinner(jobj)//sghetti
+                    var arr2 = cityList //as Array<String> //classcast?
+                    var idx2 = arr2!!.indexOf(user?.city)
+                    mCitySpinner!!.setSelection(idx2)
+                    mCity = user!!.city
                 }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                //mCountry = null
+
             }
         }
 
@@ -270,6 +287,15 @@ class UserCreateFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mSexSpinner!!.adapter = adapter
         }
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = resources.getStringArray(R.array.sex_options)// as Array<String> //classcast?
+            var idx = arr.indexOf(user?.sex)
+            mSexSpinner!!.setSelection(idx)
+            mSexStr = user!!.sex
+        }
         mSexSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
@@ -277,8 +303,8 @@ class UserCreateFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                mSexStr = null
-                //error
+                //mSexStr = null
+
             }
         }
         // activity level (spinner)
@@ -289,6 +315,15 @@ class UserCreateFragment : Fragment() {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mActivityLevelSpinner!!.adapter = adapter
+        }
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = resources.getStringArray(R.array.activity_level_options)// as Array<String> //classcast?
+            var idx = arr.indexOf(user?.activity_level)
+            mActivityLevelSpinner!!.setSelection(idx)
+            mActivityLevelStr = user!!.activity_level
         }
         mActivityLevelSpinner!!.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -303,12 +338,8 @@ class UserCreateFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
-                    mActivityLevelStr = null
-                    if(arguments != null)
-                    {
-                        user = requireArguments().getParcelable("User")
-                        mCity = user!!.city
-                    }
+                    //mActivityLevelStr = null
+
                 }
             }
         // save button
@@ -372,6 +403,7 @@ class UserCreateFragment : Fragment() {
             var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
             var sort2 = citiesS.toList().sorted()
             cities = sort2
+            cityList = cities
         }
 
         val cityAdapter: ArrayAdapter<String> =
@@ -389,7 +421,7 @@ class UserCreateFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                mCity = null
+                //mCity = null
             }
         }
     }
