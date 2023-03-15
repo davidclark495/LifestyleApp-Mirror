@@ -47,14 +47,23 @@ class HomepageFragment : Fragment() {
         mWeatherButton = view.findViewById(R.id.weatherButton)
         mBmrText = view.findViewById(R.id.bmrBox)
 
+        val imagePath = mUser?.profile_pic_file_path
+        val thumbnailImage = BitmapFactory.decodeFile(imagePath)
+        if (thumbnailImage != null) {
+            mProfPic!!.setImageBitmap(thumbnailImage)
+        }
+
         //listeners should handle fragment switching
         mProfPic!!.setOnClickListener {
-            Toast.makeText(activity, "go to profile fragment", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(activity, "go to profile fragment", Toast.LENGTH_SHORT).show()
             // make new fragment
             val userFragment = UserCreateFragment()
             val args = Bundle()
             args.putParcelable("User", mUser)
-            userFragment.setArguments(args)
+            //args.putString("ProfilePicFilePath", mUser?.profile_pic_file_path)
+
+            //picture and spinners  //args.putParcelable("")
+            userFragment.arguments = args
             // switch to fragment
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, userFragment, "userCreate_frag")
@@ -67,7 +76,7 @@ class HomepageFragment : Fragment() {
             val hikeFragment = HikeFragment()
             val args = Bundle()
             args.putParcelable("User", mUser)
-            hikeFragment.setArguments(args)
+            hikeFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, hikeFragment, "hike_frag")
             transaction?.addToBackStack(null)
@@ -79,18 +88,19 @@ class HomepageFragment : Fragment() {
             val weatherFragment = WeatherFragment()
             val args = Bundle()
             args.putParcelable("User", mUser)
-            weatherFragment.setArguments(args)
+            weatherFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, weatherFragment, "weather_frag")
             transaction?.addToBackStack(null)
             transaction?.commit()
         }
-
+/*
         val imagePath = mUser?.profile_pic_file_path
         val thumbnailImage = BitmapFactory.decodeFile(imagePath)
         if (thumbnailImage != null) {
             mProfPic!!.setImageBitmap(thumbnailImage)
         }
+ */
         mBmrText!!.text = mUser?.bmr?.toString()
         return view
     }

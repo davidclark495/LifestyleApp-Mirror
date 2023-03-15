@@ -12,8 +12,6 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Get stuff from
-
         //Create the fragment
         val userCreateFragment = UserCreateFragment()
 
@@ -24,6 +22,7 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
     }
 
     override fun receiveUserProfile(data: UserData?) {
+        //send a bundle with user data
         mUser = data
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
     }

@@ -39,6 +39,7 @@ class UserCreateFragment : Fragment() {
 
     // views for "user" data
     private var mNameET: EditText? = null
+
     private var mAgeNumPicker: NumberPicker? = null
     private var mWeightNumPicker: NumberPicker? = null
     private var mHeightNumPicker: NumberPicker? = null
@@ -77,6 +78,26 @@ class UserCreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        var user : UserData?//= null // as UserData
+
+
+
+        if(arguments == null)
+        {
+            Toast.makeText(activity, "):null instance:(", Toast.LENGTH_SHORT).show()
+            print("null instance")
+
+        }
+        else
+        {
+            //Toast.makeText(activity, "(:instance not null:)", Toast.LENGTH_SHORT).show()
+            print("instance not null")
+            user = requireArguments().getParcelable("User")
+            //Toast.makeText(activity, user.toString(), Toast.LENGTH_SHORT).show()
+
+        }
+
         var input = resources.openRawResource(R.raw.country_city)
         var jstr = input.bufferedReader().use { it.readText() }
         input.close()
@@ -101,29 +122,62 @@ class UserCreateFragment : Fragment() {
         mSexSpinner = view.findViewById(R.id.spinner_sex) as Spinner
         mActivityLevelSpinner = view.findViewById(R.id.spinner_activity_level) as Spinner
         mProfilePhotoView = view.findViewById(R.id.profile_image_view) as ImageView
+/*
+        if(arguments != null)
+        {
+            photo = requireArguments().getParcelable("Photo")
+            mNameET!!.setText(user!!.name)
+            //makeCitySpinner(jobj)//sghetti
+        }
+*/
         mSaveButton = view.findViewById(R.id.button_save) as Button
         mCameraButton = view.findViewById(R.id.button_camera) as ImageButton
         //mCalculateBMRButton = view.findViewById(R.id.button_bmr) as Button
         //mCalculateBMRText = view.findViewById(R.id.bmr_text) as TextView
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mNameET!!.setText(user!!.name)
+            mProfilePhotoFilePath = user!!.profile_pic_file_path
+            mProfilePhotoBitmap = user!!.profile_pic
+            //makeCitySpinner(jobj)//sghetti
+        }
 
         // Setup stuff
         // age
         mAgeNumPicker!!.minValue = 0
         mAgeNumPicker!!.maxValue = 150
         mAgeNumPicker!!.value = 18
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mAgeNumPicker!!.value = user!!.age as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+
         mAgeNumPicker!!.wrapSelectorWheel = false
         mAgeNumPicker!!.setOnLongPressUpdateInterval(100)
         // weight
         mWeightNumPicker!!.minValue = 0
         mWeightNumPicker!!.maxValue = 1000
         mWeightNumPicker!!.value = 150
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mWeightNumPicker!!.value = user!!.weight as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+
         mWeightNumPicker!!.wrapSelectorWheel = false
         mWeightNumPicker!!.setFormatter { String.format("%d lbs", it) }
         mWeightNumPicker!!.setOnLongPressUpdateInterval(100)
         try {
             val method = mWeightNumPicker!!.javaClass.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
             method.setAccessible(true)
-            method.invoke(mWeightNumPicker, true)
+            method.invoke(mWeightNumPicker, true) //java.lang.reflect.InvocationTargetException
         } catch (e: NoSuchMethodException) {
             e.printStackTrace()
         } catch (e: IllegalArgumentException) {
@@ -139,7 +193,15 @@ class UserCreateFragment : Fragment() {
         // height
         mHeightNumPicker!!.minValue = 0
         mHeightNumPicker!!.maxValue = 200
-        mHeightNumPicker!!.value = 60
+        mHeightNumPicker!!.value = 60 //arguments == null ? arguments.user.height : 60
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mHeightNumPicker!!.value = user!!.height as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+
         mHeightNumPicker!!.wrapSelectorWheel = false
         mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
         mHeightNumPicker!!.setFormatter {
@@ -184,6 +246,13 @@ class UserCreateFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 mCountry = null
+                if(arguments != null)
+                {
+                    user = requireArguments().getParcelable("User")
+                    //error
+                    mCountry = user!!.country
+                    makeCitySpinner(jobj)//sghetti
+                }
             }
         }
 
@@ -209,6 +278,7 @@ class UserCreateFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 mSexStr = null
+                //error
             }
         }
         // activity level (spinner)
@@ -234,6 +304,11 @@ class UserCreateFragment : Fragment() {
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
                     mActivityLevelStr = null
+                    if(arguments != null)
+                    {
+                        user = requireArguments().getParcelable("User")
+                        mCity = user!!.city
+                    }
                 }
             }
         // save button
@@ -257,7 +332,10 @@ class UserCreateFragment : Fragment() {
             val homepageFragment = HomepageFragment()
             val args = Bundle()
             args.putParcelable("User", user)
-            homepageFragment.setArguments(args)
+            //new
+            //args.putParcelable("ProfilePhotoBitmap", mProfilePhotoBitmap)
+            //args.putString("ProfilePicFilePath", user?.profile_pic_file_path)
+            homepageFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
             transaction?.addToBackStack(null)
@@ -362,6 +440,8 @@ class UserCreateFragment : Fragment() {
     // Misc. Fragment Lifecycle
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //
+
         //should probably restore this, no lifecycle at the moment
         // restore profile phot from bundle, if possible (WIP)
 //        try {
@@ -382,7 +462,8 @@ class UserCreateFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable("ProfilePhotoBitmap", mProfilePhotoBitmap)
+        //outState.putParcelable("ProfilePhotoBitmap", mProfilePhotoBitmap)
+        //outState.putParcelable("User", user)
     }
 
 }
