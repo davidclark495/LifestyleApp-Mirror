@@ -12,13 +12,15 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Create the fragment
-        val userCreateFragment = UserCreateFragment()
+        if(savedInstanceState == null) {
+            //Create the fragment
+            val userCreateFragment = UserCreateFragment()
 
-        //Replace the fragment container
-        val fTrans = supportFragmentManager.beginTransaction()
-        fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
-        fTrans.commit()
+            //Replace the fragment container
+            val fTrans = supportFragmentManager.beginTransaction()
+            fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
+            fTrans.commit()
+        }
     }
 
     override fun receiveUserProfile(data: UserData?) {

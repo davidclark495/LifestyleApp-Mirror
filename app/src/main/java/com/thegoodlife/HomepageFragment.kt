@@ -116,6 +116,9 @@ class HomepageFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        //save additional stuff here
+        outState.putParcelable("User", mUser)
+
     }
 
 }
