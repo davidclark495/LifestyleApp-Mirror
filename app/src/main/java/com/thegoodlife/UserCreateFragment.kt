@@ -31,6 +31,7 @@ class UserCreateFragment : Fragment() {
     private var mCountrySpinner: Spinner? = null
     private var mCitySpinner: Spinner? = null
     private var countryList: List<String>? = null
+    private var cityList: List<String>? = null
     private var mCountry: String? = null
     private var mCity: String? = null
 
@@ -39,6 +40,7 @@ class UserCreateFragment : Fragment() {
 
     // views for "user" data
     private var mNameET: EditText? = null
+
     private var mAgeNumPicker: NumberPicker? = null
     private var mWeightNumPicker: NumberPicker? = null
     private var mHeightNumPicker: NumberPicker? = null
@@ -57,6 +59,9 @@ class UserCreateFragment : Fragment() {
     private var mCalculateBMRButton: Button? = null
     private var mBMRVal: Double? = null
 
+    //rotation issue: oncreate called twice,
+    //first time is good second is bad
+
     // Callback interface
     interface ReceiveUserInterface {
         fun receiveUserProfile(data: UserData?)
@@ -73,10 +78,32 @@ class UserCreateFragment : Fragment() {
     }
 
     override fun onCreateView(
+        //called once when everything should be fine
+        //called a second time with null saved instance
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        var user : UserData?//= null // as UserData
+
+        //Toast.makeText(activity, "in ONCREATEVIEW", Toast.LENGTH_SHORT).show()
+
+        if(savedInstanceState== null) //happens last
+        {
+            //Toast.makeText(activity, "--no saved instance state--", Toast.LENGTH_SHORT).show()
+            print("null instance")
+
+        }
+        else //called before 'restore age'
+        {
+            //Toast.makeText(activity, "++saved instance state found++", Toast.LENGTH_SHORT).show()
+            print("saved instance state found")
+            user = savedInstanceState.getParcelable("User")
+            //Toast.makeText(activity, user.toString(), Toast.LENGTH_SHORT).show()
+
+        }
+
         var input = resources.openRawResource(R.raw.country_city)
         var jstr = input.bufferedReader().use { it.readText() }
         input.close()
@@ -101,29 +128,83 @@ class UserCreateFragment : Fragment() {
         mSexSpinner = view.findViewById(R.id.spinner_sex) as Spinner
         mActivityLevelSpinner = view.findViewById(R.id.spinner_activity_level) as Spinner
         mProfilePhotoView = view.findViewById(R.id.profile_image_view) as ImageView
+/*
+        if(arguments != null)
+        {
+            photo = requireArguments().getParcelable("Photo")
+            mNameET!!.setText(user!!.name)
+            //makeCitySpinner(jobj)//sghetti
+        }
+*/
         mSaveButton = view.findViewById(R.id.button_save) as Button
         mCameraButton = view.findViewById(R.id.button_camera) as ImageButton
         //mCalculateBMRButton = view.findViewById(R.id.button_bmr) as Button
         //mCalculateBMRText = view.findViewById(R.id.bmr_text) as TextView
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mNameET!!.setText(user!!.name)
+            mProfilePhotoFilePath = user!!.profile_pic_file_path
+            mProfilePhotoBitmap = user!!.profile_pic
+            //makeCitySpinner(jobj)//sghetti
+        }
+        if(savedInstanceState != null)
+        {
+            user = savedInstanceState.getParcelable("User")
+            mNameET!!.setText(user!!.name)
+            mProfilePhotoFilePath = user!!.profile_pic_file_path
+            mProfilePhotoBitmap = user!!.profile_pic
+            //makeCitySpinner(jobj)//sghetti
+        }
 
         // Setup stuff
         // age
         mAgeNumPicker!!.minValue = 0
         mAgeNumPicker!!.maxValue = 150
         mAgeNumPicker!!.value = 18
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mAgeNumPicker!!.value = user!!.age as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+        if(savedInstanceState != null) //works but is called twice second fails
+        {
+            //Toast.makeText(activity, "trying to restore age", Toast.LENGTH_SHORT).show()
+            user = savedInstanceState.getParcelable("User")
+            mAgeNumPicker!!.value = user!!.age as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+
         mAgeNumPicker!!.wrapSelectorWheel = false
         mAgeNumPicker!!.setOnLongPressUpdateInterval(100)
         // weight
         mWeightNumPicker!!.minValue = 0
         mWeightNumPicker!!.maxValue = 1000
         mWeightNumPicker!!.value = 150
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mWeightNumPicker!!.value = user!!.weight as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+        if(savedInstanceState != null)
+        {
+            user = savedInstanceState.getParcelable("User")
+            mWeightNumPicker!!.value = user!!.weight as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+
         mWeightNumPicker!!.wrapSelectorWheel = false
         mWeightNumPicker!!.setFormatter { String.format("%d lbs", it) }
         mWeightNumPicker!!.setOnLongPressUpdateInterval(100)
         try {
             val method = mWeightNumPicker!!.javaClass.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
             method.setAccessible(true)
-            method.invoke(mWeightNumPicker, true)
+            method.invoke(mWeightNumPicker, true) //java.lang.reflect.InvocationTargetException
         } catch (e: NoSuchMethodException) {
             e.printStackTrace()
         } catch (e: IllegalArgumentException) {
@@ -139,7 +220,21 @@ class UserCreateFragment : Fragment() {
         // height
         mHeightNumPicker!!.minValue = 0
         mHeightNumPicker!!.maxValue = 200
-        mHeightNumPicker!!.value = 60
+        mHeightNumPicker!!.value = 60 //arguments == null ? arguments.user.height : 60
+
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            mHeightNumPicker!!.value = user!!.height as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+        if(savedInstanceState != null)
+        {
+            user = savedInstanceState.getParcelable("User")
+            mHeightNumPicker!!.value = user!!.height as Int
+            //makeCitySpinner(jobj)//sghetti
+        }
+
         mHeightNumPicker!!.wrapSelectorWheel = false
         mHeightNumPicker!!.setOnLongPressUpdateInterval(100)
         mHeightNumPicker!!.setFormatter {
@@ -175,15 +270,60 @@ class UserCreateFragment : Fragment() {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 mCountrySpinner!!.adapter = adapter
             }
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = countryList //arrayOf(countryList) as Array<String> //classcast?
+            var idx = arr!!.indexOf(user?.country)
+            mCountrySpinner!!.setSelection(idx)
+            mCountry = user!!.country
+            makeCitySpinner(jobj)//sghetti
+            var arr2 = cityList //as Array<String> //classcast?
+            var idx2 = arr2!!.indexOf(user?.city)
+            mCitySpinner!!.setSelection(idx2)
+            mCity = user!!.city
+        }
+        if(savedInstanceState != null)
+        {
+            user = savedInstanceState.getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = countryList //arrayOf(countryList) as Array<String> //classcast?
+            var idx = arr!!.indexOf(user?.country)
+            mCountrySpinner!!.setSelection(idx)
+            mCountry = user!!.country
+            makeCitySpinner(jobj)//sghetti
+            var arr2 = cityList //as Array<String> //classcast?
+            var idx2 = arr2!!.indexOf(user?.city)
+            mCitySpinner!!.setSelection(idx2)
+            mCity = user!!.city
+        }
         mCountrySpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mCountry = parent.getItemAtPosition(pos) as String
                 makeCitySpinner(jobj)//sghetti
+                if(arguments != null)
+                {
+                    user = requireArguments().getParcelable("User")
+                    var arr2 = cityList //as Array<String> //classcast?
+                    var idx2 = arr2!!.indexOf(user?.city)
+                    mCitySpinner!!.setSelection(idx2)
+                    mCity = user!!.city
+                }
+                if(savedInstanceState != null)
+                {
+                    user = savedInstanceState.getParcelable("User")
+                    var arr2 = cityList //as Array<String> //classcast?
+                    var idx2 = arr2!!.indexOf(user?.city)
+                    mCitySpinner!!.setSelection(idx2)
+                    mCity = user!!.city
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                mCountry = null
+                //mCountry = null
+
             }
         }
 
@@ -201,6 +341,24 @@ class UserCreateFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mSexSpinner!!.adapter = adapter
         }
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = resources.getStringArray(R.array.sex_options)// as Array<String> //classcast?
+            var idx = arr.indexOf(user?.sex)
+            mSexSpinner!!.setSelection(idx)
+            mSexStr = user!!.sex
+        }
+        if(savedInstanceState != null)
+        {
+            user = savedInstanceState.getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = resources.getStringArray(R.array.sex_options)// as Array<String> //classcast?
+            var idx = arr.indexOf(user?.sex)
+            mSexSpinner!!.setSelection(idx)
+            mSexStr = user!!.sex
+        }
         mSexSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
@@ -208,7 +366,8 @@ class UserCreateFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                mSexStr = null
+                //mSexStr = null
+
             }
         }
         // activity level (spinner)
@@ -220,6 +379,25 @@ class UserCreateFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mActivityLevelSpinner!!.adapter = adapter
         }
+        if(arguments != null)
+        {
+            user = requireArguments().getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = resources.getStringArray(R.array.activity_level_options)// as Array<String> //classcast?
+            var idx = arr.indexOf(user?.activity_level)
+            mActivityLevelSpinner!!.setSelection(idx)
+            mActivityLevelStr = user!!.activity_level
+        }
+        if(savedInstanceState != null)
+        {
+            user = savedInstanceState.getParcelable("User")
+            //error : arr is an integer not string[]
+            var arr = resources.getStringArray(R.array.activity_level_options)// as Array<String> //classcast?
+            var idx = arr.indexOf(user?.activity_level)
+            mActivityLevelSpinner!!.setSelection(idx)
+            mActivityLevelStr = user!!.activity_level
+        }
+
         mActivityLevelSpinner!!.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 // add an anonymous listener class to track changes to spinner's value
@@ -233,7 +411,8 @@ class UserCreateFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
-                    mActivityLevelStr = null
+                    //mActivityLevelStr = null
+
                 }
             }
         // save button
@@ -257,7 +436,10 @@ class UserCreateFragment : Fragment() {
             val homepageFragment = HomepageFragment()
             val args = Bundle()
             args.putParcelable("User", user)
-            homepageFragment.setArguments(args)
+            //new
+            //args.putParcelable("ProfilePhotoBitmap", mProfilePhotoBitmap)
+            //args.putString("ProfilePicFilePath", user?.profile_pic_file_path)
+            homepageFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
             transaction?.addToBackStack(null)
@@ -294,6 +476,7 @@ class UserCreateFragment : Fragment() {
             var citiesS = Array(citiesJ.length()) { citiesJ.getString(it) }
             var sort2 = citiesS.toList().sorted()
             cities = sort2
+            cityList = cities
         }
 
         val cityAdapter: ArrayAdapter<String> =
@@ -311,7 +494,7 @@ class UserCreateFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                mCity = null
+                //mCity = null
             }
         }
     }
@@ -362,6 +545,12 @@ class UserCreateFragment : Fragment() {
     // Misc. Fragment Lifecycle
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Toast.makeText(activity, "in ONVIEWCREATED", Toast.LENGTH_SHORT).show()
+
+
+
+        //
+
         //should probably restore this, no lifecycle at the moment
         // restore profile phot from bundle, if possible (WIP)
 //        try {
@@ -380,9 +569,33 @@ class UserCreateFragment : Fragment() {
         super.onDestroyView()
     }
 
+    //after onviewcreate
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        //Toast.makeText(activity, "in ONVIEWRESTORE", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
+        //outState.putParcelable("ProfilePhotoBitmap", mProfilePhotoBitmap)
+
+        val user = UserData(
+            mNameET!!.text.toString(),
+            mAgeNumPicker!!.value,
+            mWeightNumPicker!!.value,
+            mHeightNumPicker!!.value,
+            mSexStr,
+            mActivityLevelStr,
+            mProfilePhotoBitmap,
+            mProfilePhotoFilePath,
+            mCountry,
+            mCity
+        )
+
+        outState.putParcelable("User", user)
         super.onSaveInstanceState(outState)
-        outState.putParcelable("ProfilePhotoBitmap", mProfilePhotoBitmap)
+
+        //Toast.makeText(activity, "saving state instance", Toast.LENGTH_SHORT).show()
+
     }
 
 }

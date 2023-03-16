@@ -12,18 +12,19 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Get stuff from
+        if(savedInstanceState == null) {
+            //Create the fragment
+            val userCreateFragment = UserCreateFragment()
 
-        //Create the fragment
-        val userCreateFragment = UserCreateFragment()
-
-        //Replace the fragment container
-        val fTrans = supportFragmentManager.beginTransaction()
-        fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
-        fTrans.commit()
+            //Replace the fragment container
+            val fTrans = supportFragmentManager.beginTransaction()
+            fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
+            fTrans.commit()
+        }
     }
 
     override fun receiveUserProfile(data: UserData?) {
+        //send a bundle with user data
         mUser = data
         Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
     }
