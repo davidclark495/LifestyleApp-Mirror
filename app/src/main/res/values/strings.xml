@@ -8,10 +8,10 @@
         <item>Male</item>
     </string-array>
     <string-array name="activity_level_options">
-        <item>High</item>
-        <item>Medium</item>
-        <item>Low</item>
-        <item>Potato</item>
+        <item>Extra</item>
+        <item>Moderate</item>
+        <item>Light</item>
+        <item>Sedentary</item>
     </string-array>
     <string name="title_weather_fragment">Weather</string>
     <string name="title_hike_fragment">Hike</string>

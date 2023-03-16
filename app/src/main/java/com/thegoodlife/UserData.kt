@@ -82,15 +82,24 @@ class UserData : Parcelable{
     private fun calcBMR(): Int {
         val kgWeight: Double = mWeight!! * 0.45359237
         val cmHeight: Double = mHeight!! * 2.54
-        var mBMRVal: Double
+        var BMRVal: Double
         if (mSex == "Male") {
-            mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAge!!) + 5))
+            BMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAge!!) + 5))
         }
         else { // same as "else (Female)"
-            mBMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAge!!) - 161))
+            BMRVal = round(((10 * (kgWeight)) + (6.25 * cmHeight) - (5 * mAge!!) - 161))
         }
+        // factor in activity level:
+        var activityMultiplier: Double = 1.0
+        when (mActivityLevel) {
+            "Extra" ->      activityMultiplier = 1.9
+            "Moderate" ->   activityMultiplier = 1.55
+            "Light" ->      activityMultiplier = 1.375
+            "Sedentary" ->  activityMultiplier = 1.2
+        }
+        BMRVal *= activityMultiplier
 
-        return mBMRVal.toInt()
+        return BMRVal.toInt()
     }
 
     // "Parcelable" stuff from in-class Ex. 22 //
