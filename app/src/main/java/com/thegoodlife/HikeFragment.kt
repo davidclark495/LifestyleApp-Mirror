@@ -52,6 +52,11 @@ class HikeFragment : Fragment() {
             startActivity(mapIntent)
         }
 
+        // autofill Location w/ user data's location (or w/ blank data if lacking city/country)
+        val userHasCityAndCountry = !(mUser?.city.isNullOrBlank()) && !(mUser?.country.isNullOrBlank())
+        if (mUser != null && userHasCityAndCountry)
+            mLocationET?.setText("%s, %s".format(mUser?.city,  mUser?.country))
+
         return view
     }
 }
