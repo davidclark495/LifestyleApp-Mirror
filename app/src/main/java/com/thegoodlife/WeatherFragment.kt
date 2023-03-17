@@ -63,16 +63,38 @@ class WeatherFragment : Fragment() {
             loadWeatherData(inputLocation)
         }
 
+        // restore weather data from saved state, if possible
+        if(savedInstanceState != null) {
+            val savedWeatherData: WeatherData? = savedInstanceState.getParcelable("WeatherData")
+            updateWeatherData(savedWeatherData)
+        }
+
         // autofill Location w/ user data's location (or w/ blank data if lacking city/country)
         val userHasCityAndCountry = !(mUser?.city.isNullOrBlank()) && !(mUser?.country.isNullOrBlank())
         if (mUser != null && userHasCityAndCountry)
-            mLocationET?.setText("%s, %s".format(mUser?.city,  mUser?.country))
+        {
+            val userLocation = "%s, %s".format(mUser?.city,  mUser?.country)
+            mLocationET?.setText(userLocation)
+            if(savedInstanceState == null)
+                loadWeatherData(userLocation)
+        }
 
         return view
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("WeatherData", mWeatherData)
+        super.onSaveInstanceState(outState)
+        Toast.makeText(requireContext(), "onSaveInstanceState", Toast.LENGTH_SHORT).show()
+    }
+
     private fun loadWeatherData(location: String) {
-        Toast.makeText(requireContext(), "Loading weather data...", Toast.LENGTH_SHORT).show()
+        // display a "loading" message
+        val loadingMessage = "Loading..."
+        mTempTV?.text       = loadingMessage
+        mHumidTV?.text      = loadingMessage
+        mPressureTV?.text   = loadingMessage
+        // fetch data
         mFetchWeatherTask.execute(location)
     }
 
@@ -80,13 +102,20 @@ class WeatherFragment : Fragment() {
      *  updates mWeatherData and recalculates display values
      */
     fun updateWeatherData(data: WeatherData?){
+        if(data == null){
+            val waitingMessage = "[Submit to view Weather]"
+            mTempTV?.text       = waitingMessage
+            mHumidTV?.text      = waitingMessage
+            mPressureTV?.text   = waitingMessage
+            return
+        }
         mWeatherData = data
-        mTempTV!!.text =
-            "" + (mWeatherData?.temperature!!.temp - 273.15).roundToInt() + " C"
-        mHumidTV!!.text =
-            "" + mWeatherData?.currentCondition!!.humidity + "%"
-        mPressureTV!!.text =
-            "" + mWeatherData?.currentCondition!!.pressure + " hPa"
+        mTempTV?.text =
+            "" + ((mWeatherData?.temperature?.temp?:0.0) - 273.15).roundToInt() + " C"
+        mHumidTV?.text =
+            "" + mWeatherData?.currentCondition?.humidity + "%"
+        mPressureTV?.text =
+            "" + mWeatherData?.currentCondition?.pressure + " hPa"
     }
 
     // Background Thread Worker //
