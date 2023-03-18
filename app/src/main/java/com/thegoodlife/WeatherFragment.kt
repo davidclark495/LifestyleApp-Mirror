@@ -29,7 +29,10 @@ class WeatherFragment : Fragment() {
 
     private var mLocationET: EditText? = null
     private var mWeatherData: WeatherData? = null
+    private var mConditTV: TextView? = null
+    private var mDescrTV: TextView? = null
     private var mTempTV: TextView? = null
+    private var mWindSpeedTV: TextView? = null
     private var mPressureTV: TextView? = null
     private var mHumidTV: TextView? = null
     private var mSubmitButton: Button? = null
@@ -54,7 +57,10 @@ class WeatherFragment : Fragment() {
         mFetchWeatherTask.setWeakReference(this) //make sure we're always pointing to current version of fragment
 
         mLocationET = view.findViewById(R.id.et_location) as EditText
+        mConditTV = view.findViewById(R.id.tv_condition) as TextView
+        mDescrTV = view.findViewById(R.id.tv_description) as TextView
         mTempTV = view.findViewById(R.id.tv_temperature) as TextView
+        mWindSpeedTV = view.findViewById(R.id.tv_windspeed) as TextView
         mPressureTV = view.findViewById(R.id.tv_pressure) as TextView
         mHumidTV = view.findViewById(R.id.tv_humidity) as TextView
         mSubmitButton = view.findViewById<View>(R.id.button_submit) as Button
@@ -85,13 +91,16 @@ class WeatherFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable("WeatherData", mWeatherData)
         super.onSaveInstanceState(outState)
-        Toast.makeText(requireContext(), "onSaveInstanceState", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), "onSaveInstanceState", Toast.LENGTH_SHORT).show()
     }
 
     private fun loadWeatherData(location: String) {
         // display a "loading" message
         val loadingMessage = "Loading..."
+        mConditTV?.text     = loadingMessage
+        mDescrTV?.text      = loadingMessage
         mTempTV?.text       = loadingMessage
+        mWindSpeedTV?.text  = loadingMessage
         mHumidTV?.text      = loadingMessage
         mPressureTV?.text   = loadingMessage
         // fetch data
@@ -104,14 +113,25 @@ class WeatherFragment : Fragment() {
     fun updateWeatherData(data: WeatherData?){
         if(data == null){
             val waitingMessage = "[Submit to view Weather]"
+            mConditTV?.text     = waitingMessage
+            mDescrTV?.text      = waitingMessage
             mTempTV?.text       = waitingMessage
+            mWindSpeedTV?.text  = waitingMessage
             mHumidTV?.text      = waitingMessage
             mPressureTV?.text   = waitingMessage
             return
         }
+//        Toast.makeText(requireContext(), "%f".format(data?.temperature?.temp), Toast.LENGTH_SHORT).show()
+
         mWeatherData = data
+        mConditTV?.text =
+            "" + mWeatherData?.currentCondition?.condition
+        mDescrTV?.text =
+            "" + mWeatherData?.currentCondition?.descr
         mTempTV?.text =
             "" + ((mWeatherData?.temperature?.temp?:0.0) - 273.15).roundToInt() + " C"
+        mWindSpeedTV?.text =
+            "" + (mWeatherData?.wind?.speed)?.roundToInt() + " m/sec"
         mHumidTV?.text =
             "" + mWeatherData?.currentCondition?.humidity + "%"
         mPressureTV?.text =

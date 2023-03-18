@@ -45,13 +45,40 @@
             app:layout_constraintTop_toTopOf="@+id/et_location" />
 
         <TextView
-            android:id="@+id/tv_temperature_label"
+            android:id="@+id/tv_condition_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="Temperature"
+            android:text="Condition"
             app:layout_constraintStart_toStartOf="@+id/et_location"
             app:layout_constraintTop_toBottomOf="@+id/et_location" />
+
+        <TextView
+            android:id="@+id/tv_description_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Description"
+            app:layout_constraintStart_toStartOf="@+id/tv_condition_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_condition_label" />
+
+        <TextView
+            android:id="@+id/tv_temperature_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Temperature"
+            app:layout_constraintStart_toStartOf="@+id/tv_description_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_description_label" />
+
+        <TextView
+            android:id="@+id/tv_windspeed_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Wind Speed"
+            app:layout_constraintStart_toStartOf="@+id/tv_temperature_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_temperature_label" />
 
         <TextView
             android:id="@+id/tv_pressure_label"
@@ -59,8 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:text="Pressure"
-            app:layout_constraintStart_toStartOf="@+id/tv_temperature_label"
-            app:layout_constraintTop_toBottomOf="@+id/tv_temperature_label" />
+            app:layout_constraintStart_toStartOf="@+id/tv_windspeed_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_windspeed_label" />
 
         <TextView
             android:id="@+id/tv_humidity_label"
@@ -72,12 +99,36 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_pressure_label" />
 
         <TextView
-            android:id="@+id/tv_temperature"
+            android:id="@+id/tv_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="[Submit to see Data]"
             app:layout_constraintEnd_toEndOf="@+id/button_submit"
+            app:layout_constraintTop_toTopOf="@+id/tv_condition_label" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Submit to see Data]"
+            app:layout_constraintEnd_toEndOf="@+id/tv_condition"
+            app:layout_constraintTop_toTopOf="@+id/tv_description_label" />
+
+        <TextView
+            android:id="@+id/tv_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Submit to see Data]"
+            app:layout_constraintEnd_toEndOf="@+id/tv_description"
             app:layout_constraintTop_toTopOf="@+id/tv_temperature_label" />
+
+        <TextView
+            android:id="@+id/tv_windspeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Submit to see Data]"
+            app:layout_constraintEnd_toEndOf="@+id/tv_temperature"
+            app:layout_constraintTop_toTopOf="@+id/tv_windspeed_label" />
 
         <TextView
             android:id="@+id/tv_pressure"
