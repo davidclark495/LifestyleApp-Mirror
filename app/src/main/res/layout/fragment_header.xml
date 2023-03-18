@@ -22,7 +22,7 @@
         android:id="@+id/tv_bmr_label"
         android:layout_width="100dp"
         android:layout_height="25dp"
-        android:text="string/target_calories"
+        android:text="@string/target_calories"
         app:layout_constraintEnd_toStartOf="@+id/profButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

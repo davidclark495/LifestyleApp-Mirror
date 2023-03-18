@@ -240,6 +240,7 @@ class UserCreateFragment : Fragment() {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mSexStr = parent.getItemAtPosition(pos) as String
+                mUserReceiver?.receiveUserProfile(buildUserFromFields())
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 //mSexStr = null
@@ -271,6 +272,7 @@ class UserCreateFragment : Fragment() {
                     id: Long
                 ) {
                     mActivityLevelStr = parent.getItemAtPosition(pos) as String
+                    mUserReceiver?.receiveUserProfile(buildUserFromFields())
                 }
                 override fun onNothingSelected(parent: AdapterView<*>) {
                     //mActivityLevelStr = null
