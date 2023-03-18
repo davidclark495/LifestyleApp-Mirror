@@ -5,17 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <ImageButton
-        android:id="@+id/profButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/gallery_thumb" />
-
     <ImageButton
         android:id="@+id/hikeButton"
         android:layout_width="100dp"
@@ -43,30 +32,13 @@
         app:srcCompat="?android:attr/textSelectHandle"
         app:tint="#0191FF" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="100dp"
-        android:layout_height="25dp"
-        android:text="Target Calories:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profButton" />
-
-    <TextView
-        android:id="@+id/bmrBox"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="2000"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="100dp"
         android:layout_height="25dp"
         android:background="#009688"
-        android:text="HIKING"
+        android:text="@string/caps_hiking"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
@@ -79,7 +51,7 @@
         android:layout_width="100dp"
         android:layout_height="25dp"
         android:background="#03A9F4"
-        android:text="WEATHER"
+        android:text="@string/caps_weather"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="20sp"

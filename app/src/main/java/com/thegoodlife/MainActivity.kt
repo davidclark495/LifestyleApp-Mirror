@@ -24,9 +24,22 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
     }
 
     override fun receiveUserProfile(data: UserData?) {
-        //send a bundle with user data
+        // receive a bundle with user data
         mUser = data
-        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+        if(!mUser?.name.isNullOrBlank())
+            Toast.makeText(this, "Welcome, %s".format(mUser?.name), Toast.LENGTH_SHORT).show()
+
+        // replace the header fragment
+        // make new fragment
+        val headerFragment = HeaderFragment()
+        val args = Bundle()
+        args.putParcelable("User", mUser)
+        headerFragment.arguments = args
+        // switch to fragment
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction?.replace(R.id.fl_header_container, headerFragment, "header_frag")
+        transaction?.addToBackStack(null)
+        transaction?.commit()
     }
 
 

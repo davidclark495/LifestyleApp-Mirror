@@ -15,4 +15,9 @@
     </string-array>
     <string name="title_weather_fragment">Weather</string>
     <string name="title_hike_fragment">Hike</string>
+    <string name="caps_weather">WEATHER</string>
+    <string name="caps_hiking">HIKING</string>
+    <string name="prompt_location">Enter Location: </string>
+    <string name="submit">Submit</string>
+    <string name="target_calories">Target Calories: </string>
 </resources>
