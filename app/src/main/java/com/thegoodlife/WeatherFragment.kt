@@ -2,19 +2,15 @@ package com.thegoodlife
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import java.lang.ref.WeakReference
-import java.util.concurrent.Executors
-import androidx.core.os.HandlerCompat
-import android.os.Looper
-import org.json.JSONException
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import kotlin.math.roundToInt
 
 
@@ -25,6 +21,9 @@ private const val ARG_USER = "User"
  * Significant sections are adapted from Example 27.
  */
 class WeatherFragment : Fragment() {
+    private lateinit var mUserViewModel: UserViewModel
+    private lateinit var mWeatherViewModel: WeatherViewModel
+    
     private var mUser: UserData? = null
 
     private var mLocationET: EditText? = null
@@ -54,7 +53,6 @@ class WeatherFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_weather, container, false)
-        mFetchWeatherTask.setWeakReference(this) //make sure we're always pointing to current version of fragment
 
         mLocationET = view.findViewById(R.id.et_location) as EditText
         mConditTV = view.findViewById(R.id.tv_condition) as TextView
@@ -69,11 +67,10 @@ class WeatherFragment : Fragment() {
             loadWeatherData(inputLocation)
         }
 
-        // restore weather data from saved state, if possible
-        if(savedInstanceState != null) {
-            val savedWeatherData: WeatherData? = savedInstanceState.getParcelable("WeatherData")
-            updateWeatherData(savedWeatherData)
-        }
+        // load the view models from the parent class
+        mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+        mWeatherViewModel = ViewModelProvider(requireActivity()).get(WeatherViewModel::class.java)
+        mWeatherViewModel.weather.observe(requireActivity(), mLiveWeatherObserver)
 
         // autofill Location w/ user data's location (or w/ blank data if lacking city/country)
         val userHasCityAndCountry = !(mUser?.city.isNullOrBlank()) && !(mUser?.country.isNullOrBlank())
@@ -88,10 +85,16 @@ class WeatherFragment : Fragment() {
         return view
     }
 
+    private val mLiveWeatherObserver: Observer<WeatherData> =
+        Observer { weatherData -> // update the UI if this changes
+            if (weatherData != null) {
+                updateWeatherData(weatherData)
+            }
+        }
+
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("WeatherData", mWeatherData)
+        //outState.putParcelable("WeatherData", mWeatherData)
         super.onSaveInstanceState(outState)
-//        Toast.makeText(requireContext(), "onSaveInstanceState", Toast.LENGTH_SHORT).show()
     }
 
     private fun loadWeatherData(location: String) {
@@ -104,7 +107,7 @@ class WeatherFragment : Fragment() {
         mHumidTV?.text      = loadingMessage
         mPressureTV?.text   = loadingMessage
         // fetch data
-        mFetchWeatherTask.execute(location)
+        mWeatherViewModel.setLocation(location)
     }
 
     /**
@@ -121,7 +124,6 @@ class WeatherFragment : Fragment() {
             mPressureTV?.text   = waitingMessage
             return
         }
-//        Toast.makeText(requireContext(), "%f".format(data?.temperature?.temp), Toast.LENGTH_SHORT).show()
 
         mWeatherData = data
         mConditTV?.text =
@@ -136,46 +138,5 @@ class WeatherFragment : Fragment() {
             "" + mWeatherData?.currentCondition?.humidity + "%"
         mPressureTV?.text =
             "" + mWeatherData?.currentCondition?.pressure + " hPa"
-    }
-
-    // Background Thread Worker //
-    // taken w/ modifications from Example 27
-    private class FetchWeatherTask {
-        var weatherFragmentWeakReference: WeakReference<WeatherFragment>? = null
-        private val executorService = Executors.newSingleThreadExecutor()
-        private val mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper())
-        fun setWeakReference(ref: WeatherFragment) {
-            weatherFragmentWeakReference = WeakReference(ref)
-        }
-
-        fun execute(location: String?) {
-            executorService.execute {
-                val weatherDataURL = WeatherNetworkUtils.buildURLFromString(location!!)
-                try {
-                    val jsonWeatherData = WeatherNetworkUtils.getDataFromURL(weatherDataURL!!)
-                    postToMainThread(jsonWeatherData)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        private fun postToMainThread(jsonWeatherData: String?) {
-            val localRef = weatherFragmentWeakReference!!.get()
-            mainThreadHandler.post {
-                if (jsonWeatherData != null) {
-                    try {
-                        val newWeatherData = WeatherJSONUtils.getWeatherData(jsonWeatherData)
-                        localRef!!.updateWeatherData(newWeatherData)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
-
-    companion object {
-        private val mFetchWeatherTask = FetchWeatherTask()
     }
 }

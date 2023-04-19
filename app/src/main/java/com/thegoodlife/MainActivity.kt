@@ -22,6 +22,11 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // important: access the view models to cause them to lazily-load NOW
+        // (otherwise fragments may want to create their own copies)
+        mUserViewModel.currUser
+        mWeatherViewModel.weather
+
         if(savedInstanceState == null) {
             //Create the fragment
             val userCreateFragment = UserCreateFragment()

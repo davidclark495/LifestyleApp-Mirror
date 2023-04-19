@@ -8,6 +8,9 @@ class WeatherViewModel(repository: WeatherRepository) : ViewModel() {
 
     // Connect a live data object to the current bit of weather info
     private val mWeather: LiveData<WeatherData> = repository.mWeather
+    // Returns the data contained in the live data object
+    val weather: LiveData<WeatherData>
+        get() = mWeather
 
     private var mWeatherRepository: WeatherRepository = repository
 
@@ -24,9 +27,6 @@ class WeatherViewModel(repository: WeatherRepository) : ViewModel() {
         mWeatherRepository.updateWeatherAtLocation(location)
     }
 
-    // Returns the data contained in the live data object
-    val weather: LiveData<WeatherData>
-        get() = mWeather
 }
 
 // This factory class allows us to define custom constructors for the view model
