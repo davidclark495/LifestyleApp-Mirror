@@ -1,12 +1,22 @@
 package com.thegoodlife
 
-import androidx.appcompat.app.AppCompatActivity
-import com.thegoodlife.UserCreateFragment.ReceiveUserInterface
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.thegoodlife.UserCreateFragment.ReceiveUserInterface
+
 
 class MainActivity : AppCompatActivity(), ReceiveUserInterface {
-    // private VARs go here
+
+    // Initialize the user/weather view models (also, inject the respective repositories).
+    // We define our own constructor + our own view model factory in each viewmodel's .kt file.
+    private val mUserViewModel: UserViewModel by viewModels {
+        UserViewModelFactory((application as GoodLifeApplication).userRepository)
+    }
+    private val mWeatherViewModel: WeatherViewModel by viewModels {
+        WeatherViewModelFactory((application as GoodLifeApplication).weatherRepository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +51,8 @@ class MainActivity : AppCompatActivity(), ReceiveUserInterface {
         transaction?.addToBackStack(null)
         transaction?.commit()
     }
+
+
 
 
 
