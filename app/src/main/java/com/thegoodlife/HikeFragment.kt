@@ -1,37 +1,28 @@
 package com.thegoodlife
 
 import android.content.Intent
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.net.Uri
+import androidx.lifecycle.ViewModelProvider
 
-
-private const val ARG_USER = "User"
 
 /**
  * A simple [Fragment] subclass.
  */
 class HikeFragment : Fragment() {
-    private var mUser: UserData? = null
+    private lateinit var mUserViewModel: UserViewModel
+
     private var mLocationET: EditText? = null
     private var mSearchBtn: ImageButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            if(Build.VERSION.SDK_INT >= 33) {
-                mUser = it.getParcelable(ARG_USER, UserData::class.java)
-            } else {
-                mUser = it.getParcelable(ARG_USER)
-            }
-        }
     }
 
     override fun onCreateView(
@@ -51,10 +42,13 @@ class HikeFragment : Fragment() {
             startActivity(mapIntent)
         }
 
+        mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+
         // autofill Location w/ user data's location (or w/ blank data if lacking city/country)
-        val userHasCityAndCountry = !(mUser?.city.isNullOrBlank()) && !(mUser?.country.isNullOrBlank())
-        if (mUser != null && userHasCityAndCountry)
-            mLocationET?.setText("%s, %s".format(mUser?.city,  mUser?.country))
+        val user = mUserViewModel.currUser.value
+        val userHasCityAndCountry = !(user?.city.isNullOrBlank()) && !(user?.country.isNullOrBlank())
+        if (user != null && userHasCityAndCountry)
+            mLocationET?.setText("%s, %s".format(user?.city,  user?.country))
 
         return view
     }

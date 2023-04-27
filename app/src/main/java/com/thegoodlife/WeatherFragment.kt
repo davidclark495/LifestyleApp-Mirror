@@ -1,6 +1,5 @@
 package com.thegoodlife
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import kotlin.math.roundToInt
 
 
-private const val ARG_USER = "User"
-
 /**
  * A simple [Fragment] subclass.
  * Significant sections are adapted from Example 27.
@@ -23,8 +20,6 @@ private const val ARG_USER = "User"
 class WeatherFragment : Fragment() {
     private lateinit var mUserViewModel: UserViewModel
     private lateinit var mWeatherViewModel: WeatherViewModel
-    
-    private var mUser: UserData? = null
 
     private var mLocationET: EditText? = null
     private var mWeatherData: WeatherData? = null
@@ -35,17 +30,6 @@ class WeatherFragment : Fragment() {
     private var mPressureTV: TextView? = null
     private var mHumidTV: TextView? = null
     private var mSubmitButton: Button? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            if(Build.VERSION.SDK_INT >= 33) {
-                mUser = it.getParcelable(ARG_USER, UserData::class.java)
-            } else {
-                mUser = it.getParcelable(ARG_USER)
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,13 +57,17 @@ class WeatherFragment : Fragment() {
         mWeatherViewModel.weather.observe(requireActivity(), mLiveWeatherObserver)
 
         // autofill Location w/ user data's location (or w/ blank data if lacking city/country)
-        val userHasCityAndCountry = !(mUser?.city.isNullOrBlank()) && !(mUser?.country.isNullOrBlank())
-        if (mUser != null && userHasCityAndCountry)
-        {
-            val userLocation = "%s, %s".format(mUser?.city,  mUser?.country)
-            mLocationET?.setText(userLocation)
-            if(savedInstanceState == null)
-                loadWeatherData(userLocation)
+        val user = mUserViewModel.currUser.value
+        if (user != null) {
+            val userHasCountry = !(user.country.isNullOrBlank())
+            val userHasCity = !(user.city.isNullOrBlank())
+            if (userHasCountry && userHasCity)
+            {
+                val userLocation = "%s, %s".format(user?.city,  user?.country)
+                mLocationET?.setText(userLocation)
+                if(savedInstanceState == null)
+                    loadWeatherData(userLocation)
+            }
         }
 
         return view
@@ -93,7 +81,6 @@ class WeatherFragment : Fragment() {
         }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelable("WeatherData", mWeatherData)
         super.onSaveInstanceState(outState)
     }
 

@@ -2,7 +2,6 @@ package com.thegoodlife
 
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -31,7 +30,6 @@ class UserCreateFragment : Fragment() {
     private lateinit var mUserViewModel: UserViewModel
 
     // the host Activity, must support an interface/callback
-    private var mUserReceiver: ReceiveUserInterface? = null
 
     // misc. data used to populate views
     private var mJObjCtryCity: JSONObject? = null
@@ -58,21 +56,6 @@ class UserCreateFragment : Fragment() {
     private var mCityStr: String? = null
     private var mProfilePhotoBitmap: Bitmap? = null
     private var mProfilePhotoFilePath: String? = null
-
-    // Callback interface
-    interface ReceiveUserInterface {
-        fun receiveUserProfile(data: UserData?)
-    }
-
-    // attach to parent Activity, Activity must implement ReceiveUserInterface
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mUserReceiver = try {
-            context as ReceiveUserInterface
-        } catch (e: ClassCastException) {
-            throw ClassCastException("$context must implement UserCreateFragment.ReceiveUserInterface")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -193,7 +176,7 @@ class UserCreateFragment : Fragment() {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mSexStr = parent.getItemAtPosition(pos) as String
-                mUserReceiver?.receiveUserProfile(buildUserFromFields())
+                mUserViewModel.updateCurrUser(buildUserFromFields())
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 //mSexStr = null
@@ -219,7 +202,7 @@ class UserCreateFragment : Fragment() {
                     id: Long
                 ) {
                     mActivityLevelStr = parent.getItemAtPosition(pos) as String
-                    mUserReceiver?.receiveUserProfile(buildUserFromFields())
+                    mUserViewModel.updateCurrUser(buildUserFromFields())
                 }
                 override fun onNothingSelected(parent: AdapterView<*>) {
                     //mActivityLevelStr = null
@@ -227,9 +210,8 @@ class UserCreateFragment : Fragment() {
             }
         // save button
         mSaveButton?.setOnClickListener {
-            // build user from fields & trigger ReceiveUserInterface Callback
+            // build user from fields & update ViewModel
             val user = buildUserFromFields()
-            mUserReceiver?.receiveUserProfile(user)
             mUserViewModel.updateCurrUser(user)
 
             // replace this fragment w/ a new Homepage fragment
