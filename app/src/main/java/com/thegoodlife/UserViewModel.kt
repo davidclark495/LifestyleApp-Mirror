@@ -3,12 +3,12 @@ package com.thegoodlife
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 
 class UserViewModel(repository: UserRepository) : ViewModel() {
 
     // Connect a live data object to the current bit of weather info
     private val mCurrUser: LiveData<UserData?> = repository.mCurrUser
-
     private var mUserRepository: UserRepository = repository
 
     //Use a second live data here to show entire contents of db
@@ -20,9 +20,11 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
 
     // TODO in REQ4
 //    val allCityWeather: LiveData<List<WeatherFragment>> = repository.allCityWeather.asLiveData()
+    var allUsers: LiveData<List<UserTable>> = repository.allUserData.asLiveData()
 
     fun updateCurrUser(updatedUser: UserData?){
         // TODO
+        print("IN USER VIEW MODEL")
         mUserRepository.updateCurrUser(updatedUser)
     }
 

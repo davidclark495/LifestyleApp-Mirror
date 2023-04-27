@@ -8,12 +8,36 @@ import androidx.room.Entity
 
     @Entity(tableName = "user_table")
     data class UserTable(
+
+        @PrimaryKey var username: String,
+        //@ColumnInfo(name="")
+
+        var userdata: String,
+/*
+        var age: Int,
+        var weight: Int,
+        var height: Int,
+        var activity: String,
+        var sex: String,
+        var country: String,
+        var city: String
+
+ */
+
+        /*
         @field:ColumnInfo(name = "username")
-        @field:PrimaryKey
-        var username: String,
+        @field:PrimaryKey var username: String,
+
+
+
         @field:ColumnInfo(
-            name = "userdata"
-        ) var userJson: String
-    )
+            name = "userdata" //everything but pic probably -> should use UserData object -> 'unsure how to store (json is fine)
+
+            //, val height: String = ""// weight etc.
+
+        ) /*var userdata: UserData*/ var userJson: String = ""
+
+         */
+)
 
 //}

@@ -22,6 +22,11 @@ class UserRepository private constructor(userDao: UserDao) {
     // UserDao is/would-be the intermediary between the UserRepo and a database, implement only if time allows
     // private var mUserDao: UserDao = userDao // not yet implemented
 
+    val allUserData: Flow<List<UserTable>> = userDao.getAllUser()
+
+    private var mUsername: String? = null
+    private var mUserData: String? = null //when is this set?
+
     /**
      * change the current user & update their entry in the database
      */
@@ -32,6 +37,7 @@ class UserRepository private constructor(userDao: UserDao) {
                 mCurrUser.postValue(updatedUser)
                 // update database (TODO in REQ4)
 
+                print("IN USER REPOSITORY")
                 update(updatedUser) // not yet implemented
             }
         }
@@ -52,13 +58,22 @@ class UserRepository private constructor(userDao: UserDao) {
     @WorkerThread
     suspend fun insert(newUser: UserData){
         // TODO in REQ4
+
+        if (mUsername != null && mUserData != null) {
+            mUserDao.insert(UserTable(mUsername!!, mUserData!!))
+        }
+
     }
 
     @WorkerThread
     suspend fun update(user: UserData){
         // TODO in REQ4
 
-
+        //
+        print("IN WORKER THREAD")
+        mUsername = user.name
+        mUserData = user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + user.activity_level + "|" +  user.country + user.city
+        mUserDao.update(mUsername!!, mUserData!!)
 
     }
 

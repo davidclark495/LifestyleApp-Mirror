@@ -87,7 +87,7 @@ class UserCreateFragment : Fragment() {
 
         mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
         mUserViewModel.currUser.observe(requireActivity(), mCurrUserObserver)
-
+        //mUserViewModel.allUsers.observe(requireActivity(), flowObserver)
 
         // Setup stuff
         // age
@@ -221,6 +221,9 @@ class UserCreateFragment : Fragment() {
             transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
             transaction?.addToBackStack(null)
             transaction?.commit()
+
+            print("IN USER CREATE FRAGMENT")
+            mUserViewModel.updateCurrUser(buildUserFromFields())
         }
         mCameraButton?.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -241,6 +244,18 @@ class UserCreateFragment : Fragment() {
         Observer { user -> // update the UI if this changes
             populateFieldsFromUser(user)
         }
+
+    /*
+    //will we use a recyclerview?
+    private val flowObserver: Observer<List<UserTable>> =
+        Observer { userTableList ->
+            if (userTableList != null) {
+                // Pass the entire list to a RecyclerView
+                mRecyclerView!!.adapter = WeatherRVAdapter(weatherTableList)
+            }
+        }
+
+     */
 
     private fun populateFieldsFromUser(user: UserData?)
     {

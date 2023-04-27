@@ -55,9 +55,11 @@ abstract class UserRoomDatabase : RoomDatabase() {
             userDao.insert(UserTable("Dummy_loc","Dummy_data"))//too many arguments? -> table.java stub
         }
 
+        /*
         fun userDao(): UserDao {
             return userDao()
         }
+        */
     }
 
 }
