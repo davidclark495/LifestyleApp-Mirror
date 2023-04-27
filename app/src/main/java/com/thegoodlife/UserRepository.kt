@@ -62,7 +62,6 @@ class UserRepository private constructor(userDao: UserDao) {
         if (mUsername != null && mUserData != null) {
             mUserDao.insert(UserTable(mUsername!!, mUserData!!))
         }
-
     }
 
     @WorkerThread
@@ -72,7 +71,7 @@ class UserRepository private constructor(userDao: UserDao) {
         //
         println("IN UREP - WORKER THREAD")
         mUsername = user.name
-        mUserData = user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + user.activity_level + "|" +  user.country + "|" + user.city
+        mUserData = user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + "|" + user.activity_level + "|" +  user.country + "|" + user.city
         mUserDao.update(mUsername!!, mUserData!!)
 
     }

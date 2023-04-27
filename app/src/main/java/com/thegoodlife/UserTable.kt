@@ -9,11 +9,13 @@ import androidx.room.Entity
     @Entity(tableName = "user_table")
     data class UserTable(
 
-        @PrimaryKey var username: String,
+        //us
+        @PrimaryKey var username: String, //hidden ID
         //@ColumnInfo(name="")
 
-        var userdata: String,
-/*
+        //var userdata: String,
+
+        var name: String,
         var age: Int,
         var weight: Int,
         var height: Int,
@@ -22,7 +24,7 @@ import androidx.room.Entity
         var country: String,
         var city: String
 
- */
+
 
         /*
         @field:ColumnInfo(name = "username")
