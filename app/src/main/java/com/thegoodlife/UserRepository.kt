@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.jvm.Synchronized
 /**
@@ -11,10 +12,12 @@ import kotlin.jvm.Synchronized
  * Responsible for tracking the current user and storing previous/inactive users.
  * Provides mechanisms for updating the current user and switching to new/old users.
  */
-class UserRepository private constructor(/*userDao: UserDao*/) {
+class UserRepository private constructor(userDao: UserDao) {
 
     // LiveData object that stores the current user
     val mCurrUser = MutableLiveData<UserData?>()
+
+    private var mUserDao: UserDao = userDao
 
     // UserDao is/would-be the intermediary between the UserRepo and a database, implement only if time allows
     // private var mUserDao: UserDao = userDao // not yet implemented
@@ -28,7 +31,8 @@ class UserRepository private constructor(/*userDao: UserDao*/) {
                 // update live data
                 mCurrUser.postValue(updatedUser)
                 // update database (TODO in REQ4)
-                //update(updatedUser) // not yet implemented
+
+                update(updatedUser) // not yet implemented
             }
         }
     }
@@ -53,6 +57,9 @@ class UserRepository private constructor(/*userDao: UserDao*/) {
     @WorkerThread
     suspend fun update(user: UserData){
         // TODO in REQ4
+
+
+
     }
 
     companion object {
@@ -60,12 +67,12 @@ class UserRepository private constructor(/*userDao: UserDao*/) {
         private lateinit var mScope: CoroutineScope
         @Synchronized
         fun getInstance(
-//            userDao: UserDao
+            userDao: UserDao,
             scope: CoroutineScope
         ): UserRepository {
             mScope = scope
             return mInstance?: synchronized(this){
-                val instance = UserRepository(/*userDao*/)
+                val instance = UserRepository(userDao)
                 mInstance = instance
                 instance
             }

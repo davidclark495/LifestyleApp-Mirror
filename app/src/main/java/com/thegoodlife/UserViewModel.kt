@@ -16,6 +16,8 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
     // can watch it. If you want to observe variables in the repo from the viewmodel, use
     // observeForever (not recommended as it's almost never needed)
     //
+
+
     // TODO in REQ4
 //    val allCityWeather: LiveData<List<WeatherFragment>> = repository.allCityWeather.asLiveData()
 
