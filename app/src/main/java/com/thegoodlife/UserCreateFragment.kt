@@ -15,6 +15,8 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -26,11 +28,13 @@ import java.util.*
  *
  */
 class UserCreateFragment : Fragment() {
+    private lateinit var mUserViewModel: UserViewModel
 
     // the host Activity, must support an interface/callback
     private var mUserReceiver: ReceiveUserInterface? = null
 
     // misc. data used to populate views
+    private var mJObjCtryCity: JSONObject? = null
     private var mCountryList: List<String>? = null
     private var mCityList: List<String>? = null
 
@@ -75,26 +79,12 @@ class UserCreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        // load user data
-        var user : UserData? = null
-
-        if(arguments != null) {
-            user = requireArguments().getParcelable("User")
-        }
-        if(savedInstanceState != null) {
-            //Toast.makeText(activity, "++saved instance state found++", Toast.LENGTH_SHORT).show()
-            print("saved instance state found")
-            user = savedInstanceState.getParcelable("User")
-            //Toast.makeText(activity, user.toString(), Toast.LENGTH_SHORT).show()
-        }
-
         // load country / city data
         val src_ctry_cty = resources.openRawResource(R.raw.country_city)
         val jstr_ctry_cty = src_ctry_cty.bufferedReader().use { it.readText() }
         src_ctry_cty.close()
-        val jobj_ctry_cty = JSONObject(jstr_ctry_cty)
-        val countries = jobj_ctry_cty.keys().asSequence().toList()
+        mJObjCtryCity = JSONObject(jstr_ctry_cty)
+        val countries = mJObjCtryCity!!.keys().asSequence().toList()
         mCountryList = countries.sorted()
 
         val view = inflater.inflate(R.layout.fragment_user_create, container, false)
@@ -112,11 +102,9 @@ class UserCreateFragment : Fragment() {
         mSaveButton = view.findViewById(R.id.button_save) as Button
         mCameraButton = view.findViewById(R.id.button_camera) as ImageButton
 
-        if(user != null) {
-            mNameET?.setText(user?.name)
-            mProfilePhotoFilePath = user?.profile_pic_file_path
-            mProfilePhotoBitmap = user?.profile_pic
-        }
+        mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+        mUserViewModel.currUser.observe(requireActivity(), mCurrUserObserver)
+
 
         // Setup stuff
         // age
@@ -125,9 +113,6 @@ class UserCreateFragment : Fragment() {
         mAgeNumPicker?.value = 18
         mAgeNumPicker?.wrapSelectorWheel = false
         mAgeNumPicker?.setOnLongPressUpdateInterval(100)
-        if(user != null) {
-            mAgeNumPicker?.value = user?.age as Int
-        }
 
         // weight
         mWeightNumPicker?.minValue = 0
@@ -136,9 +121,6 @@ class UserCreateFragment : Fragment() {
         mWeightNumPicker?.wrapSelectorWheel = false
         mWeightNumPicker?.setOnLongPressUpdateInterval(100)
         mWeightNumPicker?.setFormatter { String.format("%d lbs", it) }
-        if(user != null) {
-            mWeightNumPicker?.value = user?.weight as Int
-        }
         try {
             val method = mWeightNumPicker?.javaClass?.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
             method?.setAccessible(true)
@@ -160,9 +142,6 @@ class UserCreateFragment : Fragment() {
                 it % 12
             )
         }
-        if(user != null) {
-            mHeightNumPicker?.value = user?.height as Int
-        }
         try {
             val method = mHeightNumPicker?.javaClass?.getDeclaredMethod("changeValueByOne", Boolean::class.javaPrimitiveType)
             method?.setAccessible(true)
@@ -179,42 +158,22 @@ class UserCreateFragment : Fragment() {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 mCountrySpinner?.adapter = adapter
             }
-        if(user != null)
-        {
-            val arr = mCountryList
-            val idx = arr?.indexOf(user?.country)
-            mCountrySpinner?.setSelection(idx ?: 0)
-            mCountryStr = user?.country
-            makeCitySpinner(jobj_ctry_cty)//sghetti
-            val idx2 = mCityList?.indexOf(user?.city)
-            mCitySpinner?.setSelection(idx2 ?: 0)
-            mCityStr = user?.city
-        }
+
         mCountrySpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 mCountryStr = parent.getItemAtPosition(pos) as String
-                makeCitySpinner(jobj_ctry_cty)//sghetti
-                if(arguments != null)
-                {
-                    user = requireArguments().getParcelable("User")
-                    val idx2 = mCityList?.indexOf(user?.city)
-                    mCitySpinner?.setSelection(idx2 ?: 0)
-                    mCityStr = user?.city
-                }
-                if(savedInstanceState != null)
-                {
-                    user = savedInstanceState.getParcelable("User")
-                    var idx2 = mCityList?.indexOf(user?.city)
-                    mCitySpinner?.setSelection(idx2 ?: 0)
-                    mCityStr = user?.city
-                }
+                makeCitySpinner(mJObjCtryCity!!)//sghetti
+
+                val user = mUserViewModel.currUser.value
+                val idx2 = mCityList?.indexOf(user?.city)
+                mCitySpinner?.setSelection(idx2 ?: 0)
+                mCityStr = user?.city
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 //mCountry = null
             }
         }
-
 
         /////
 
@@ -229,13 +188,7 @@ class UserCreateFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mSexSpinner?.adapter = adapter
         }
-        if(user != null)
-        {
-            val arr = resources.getStringArray(R.array.sex_options)
-            val idx = arr.indexOf(user?.sex)
-            mSexSpinner?.setSelection(idx)
-            mSexStr = user?.sex
-        }
+
         mSexSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             // add an anonymous listener class to track changes to spinner's value
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
@@ -255,13 +208,7 @@ class UserCreateFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             mActivityLevelSpinner?.adapter = adapter
         }
-        if(user != null)
-        {
-            val arr = resources.getStringArray(R.array.activity_level_options)
-            val idx = arr.indexOf(user?.activity_level)
-            mActivityLevelSpinner?.setSelection(idx)
-            mActivityLevelStr = user?.activity_level
-        }
+
         mActivityLevelSpinner?.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 // add an anonymous listener class to track changes to spinner's value
@@ -283,12 +230,12 @@ class UserCreateFragment : Fragment() {
             // build user from fields & trigger ReceiveUserInterface Callback
             val user = buildUserFromFields()
             mUserReceiver?.receiveUserProfile(user)
+            mUserViewModel.updateCurrUser(user)
 
             // replace this fragment w/ a new Homepage fragment
             val homepageFragment = HomepageFragment()
-            val args = Bundle()
-            args.putParcelable("User", user)
-            homepageFragment.arguments = args
+//            val args = Bundle()
+//            homepageFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
             transaction?.addToBackStack(null)
@@ -304,6 +251,44 @@ class UserCreateFragment : Fragment() {
         }
         return view
     }
+
+    // update fields when UserData changes
+    private val mCurrUserObserver: Observer<UserData?> =
+        Observer { user -> // update the UI if this changes
+            if(user != null) {
+                mNameET?.setText(user?.name)
+                mProfilePhotoFilePath = user?.profile_pic_file_path
+                mProfilePhotoBitmap = user?.profile_pic
+                mAgeNumPicker?.value = user?.age as Int
+                mWeightNumPicker?.value = user?.weight as Int
+                mHeightNumPicker?.value = user?.height as Int
+
+                run {// country + city spinners
+                    val arr = mCountryList
+                    val idx = arr?.indexOf(user?.country)
+                    mCountrySpinner?.setSelection(idx ?: 0)
+                    mCountryStr = user?.country
+                    makeCitySpinner(mJObjCtryCity!!)//sghetti
+                    val idx2 = mCityList?.indexOf(user?.city)
+                    mCitySpinner?.setSelection(idx2 ?: 0)
+                    mCityStr = user?.city
+                }
+
+                run {// sex spinner
+                    val arr = resources.getStringArray(R.array.sex_options)
+                    val idx = arr.indexOf(user?.sex)
+                    mSexSpinner?.setSelection(idx)
+                    mSexStr = user?.sex
+                }
+
+                run { // activity level spinner
+                    val arr = resources.getStringArray(R.array.activity_level_options)
+                    val idx = arr.indexOf(user?.activity_level)
+                    mActivityLevelSpinner?.setSelection(idx)
+                    mActivityLevelStr = user?.activity_level
+                }
+            }
+        }
 
     private fun makeCitySpinner(jobj: JSONObject)
     {
@@ -350,7 +335,6 @@ class UserCreateFragment : Fragment() {
             finalBitmap?.compress(Bitmap.CompressFormat.JPEG, 90, out)
             out.flush()
             out.close()
-            //Toast.makeText(this, "file saved!", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -375,8 +359,6 @@ class UserCreateFragment : Fragment() {
                 if (isExternalStorageWritable) {
                     val filePathString = saveImage(mProfilePhotoBitmap)
                     this.mProfilePhotoFilePath = filePathString
-                } else {
-                    //Toast.makeText(this, "External storage not writable.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -399,11 +381,7 @@ class UserCreateFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         val user = buildUserFromFields()
-
-        outState.putParcelable("User", user)
         super.onSaveInstanceState(outState)
-
-        //Toast.makeText(activity, "saving state instance", Toast.LENGTH_SHORT).show()
     }
 
 }

@@ -1,13 +1,9 @@
 package com.thegoodlife
 
-import android.os.Parcelable
-import android.os.Parcel
-import android.os.Parcelable.Creator
 import android.graphics.Bitmap
-import android.os.Build
 import kotlin.math.round
 
-class UserData : Parcelable{
+class UserData {
     private var mName: String? = null
     private var mAge: Int? = null
     private var mWeight: Int? = null    // in pounds
@@ -101,55 +97,4 @@ class UserData : Parcelable{
 
         return BMRVal.toInt()
     }
-
-    // "Parcelable" stuff from in-class Ex. 22 //
-
-    //Say how and what to write to parcel
-    override fun writeToParcel(out: Parcel, flags: Int) {
-        out.writeString(mName)
-        out.writeInt(mAge ?: -1)        // mAge if not null, else -1
-        out.writeInt(mWeight ?: -1)
-        out.writeInt(mHeight ?: -1)
-        out.writeString(mSex)
-        out.writeString(mActivityLevel)
-        out.writeParcelable(mProfilePic, flags)
-        out.writeString(mProfilePicFilePath)
-        out.writeString(mCountry)
-        out.writeString(mCity)
-    }
-
-    //Say how to read in from parcel
-    private constructor(`in`: Parcel) {
-        mName = `in`.readString()
-        mAge = `in`.readInt()
-        mWeight = `in`.readInt()
-        mHeight = `in`.readInt()
-        mSex = `in`.readString()
-        mActivityLevel = `in`.readString()
-        if(Build.VERSION.SDK_INT >= 33) {
-            mProfilePic = `in`.readParcelable(null, Bitmap::class.java)
-        } else {
-            mProfilePic = `in`.readParcelable(null)
-        }
-        mProfilePicFilePath = `in`.readString()
-        mCountry = `in`.readString()
-        mCity = `in`.readString()
-    }
-
-    //Don't worry about this for now, not sure why we need it, sorry
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Creator<UserData> {
-        override fun createFromParcel(parcel: Parcel): UserData {
-            return UserData(parcel)
-        }
-        override fun newArray(size: Int): Array<UserData?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-
-
 }
