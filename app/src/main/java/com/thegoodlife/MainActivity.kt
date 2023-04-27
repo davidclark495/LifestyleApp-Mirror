@@ -1,10 +1,8 @@
 package com.thegoodlife
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         // important: access the view models to cause them to lazily-load NOW
         // (otherwise fragments may want to create their own copies)
         // (definitely a hack, but it's easy)
-        mUserViewModel.currUser.observe(this, mCurrUserObserver)
+        mUserViewModel.currUser
         mWeatherViewModel.weather
 
         if(savedInstanceState == null) {
@@ -38,12 +36,4 @@ class MainActivity : AppCompatActivity() {
             fTrans.commit()
         }
     }
-
-    private val mCurrUserObserver: Observer<UserData?> =
-        Observer { user -> // update the UI if this changes
-            if(user != null) {
-                if( !user.name.isNullOrBlank() )
-                    Toast.makeText(this, "Welcome, %s".format(user.name), Toast.LENGTH_SHORT).show()
-            }
-        }
 }

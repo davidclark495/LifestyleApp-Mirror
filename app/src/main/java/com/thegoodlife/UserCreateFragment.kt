@@ -213,11 +213,10 @@ class UserCreateFragment : Fragment() {
             // build user from fields & update ViewModel
             val user = buildUserFromFields()
             mUserViewModel.updateCurrUser(user)
+            Toast.makeText(requireActivity(), "Welcome, %s".format(user.name), Toast.LENGTH_SHORT).show()
 
             // replace this fragment w/ a new Homepage fragment
             val homepageFragment = HomepageFragment()
-//            val args = Bundle()
-//            homepageFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
             transaction?.addToBackStack(null)
@@ -231,46 +230,55 @@ class UserCreateFragment : Fragment() {
                 ex.printStackTrace()
             }
         }
+
+        populateFieldsFromUser(mUserViewModel.currUser.value)
+
         return view
     }
 
     // update fields when UserData changes
     private val mCurrUserObserver: Observer<UserData?> =
         Observer { user -> // update the UI if this changes
-            if(user != null) {
-                mNameET?.setText(user?.name)
-                mProfilePhotoFilePath = user?.profile_pic_file_path
-                mProfilePhotoBitmap = user?.profile_pic
-                mAgeNumPicker?.value = user?.age as Int
-                mWeightNumPicker?.value = user?.weight as Int
-                mHeightNumPicker?.value = user?.height as Int
-
-                run {// country + city spinners
-                    val arr = mCountryList
-                    val idx = arr?.indexOf(user?.country)
-                    mCountrySpinner?.setSelection(idx ?: 0)
-                    mCountryStr = user?.country
-                    makeCitySpinner(mJObjCtryCity!!)//sghetti
-                    val idx2 = mCityList?.indexOf(user?.city)
-                    mCitySpinner?.setSelection(idx2 ?: 0)
-                    mCityStr = user?.city
-                }
-
-                run {// sex spinner
-                    val arr = resources.getStringArray(R.array.sex_options)
-                    val idx = arr.indexOf(user?.sex)
-                    mSexSpinner?.setSelection(idx)
-                    mSexStr = user?.sex
-                }
-
-                run { // activity level spinner
-                    val arr = resources.getStringArray(R.array.activity_level_options)
-                    val idx = arr.indexOf(user?.activity_level)
-                    mActivityLevelSpinner?.setSelection(idx)
-                    mActivityLevelStr = user?.activity_level
-                }
-            }
+            populateFieldsFromUser(user)
         }
+
+    private fun populateFieldsFromUser(user: UserData?)
+    {
+        if(user == null)
+            return
+
+        mNameET?.setText(user.name)
+        mProfilePhotoFilePath = user.profile_pic_file_path
+        mProfilePhotoBitmap = user.profile_pic
+        mAgeNumPicker?.value = user.age as Int
+        mWeightNumPicker?.value = user.weight as Int
+        mHeightNumPicker?.value = user.height as Int
+
+        run {// country + city spinners
+            val arr = mCountryList
+            val idx = arr?.indexOf(user.country)
+            mCountrySpinner?.setSelection(idx ?: 0)
+            mCountryStr = user.country
+            makeCitySpinner(mJObjCtryCity!!)//sghetti
+            val idx2 = mCityList?.indexOf(user.city)
+            mCitySpinner?.setSelection(idx2 ?: 0)
+            mCityStr = user.city
+        }
+
+        run {// sex spinner
+            val arr = resources.getStringArray(R.array.sex_options)
+            val idx = arr.indexOf(user.sex)
+            mSexSpinner?.setSelection(idx)
+            mSexStr = user.sex
+        }
+
+        run { // activity level spinner
+            val arr = resources.getStringArray(R.array.activity_level_options)
+            val idx = arr.indexOf(user.activity_level)
+            mActivityLevelSpinner?.setSelection(idx)
+            mActivityLevelStr = user.activity_level
+        }
+    }
 
     private fun makeCitySpinner(jobj: JSONObject)
     {
@@ -342,6 +350,8 @@ class UserCreateFragment : Fragment() {
                     val filePathString = saveImage(mProfilePhotoBitmap)
                     this.mProfilePhotoFilePath = filePathString
                 }
+
+                mUserViewModel.updateCurrUser(buildUserFromFields())
             }
         }
 
@@ -362,7 +372,6 @@ class UserCreateFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        val user = buildUserFromFields()
         super.onSaveInstanceState(outState)
     }
 
