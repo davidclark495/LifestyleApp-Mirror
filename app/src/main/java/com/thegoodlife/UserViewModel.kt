@@ -24,7 +24,7 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
 
     fun updateCurrUser(updatedUser: UserData?){
         // TODO
-        print("IN USER VIEW MODEL")
+        println("IN USER VIEW MODEL")
         mUserRepository.updateCurrUser(updatedUser)
     }
 

@@ -22,9 +22,10 @@ interface UserDao {
     @Query("DELETE FROM user_table WHERE username LIKE :user")
     suspend fun deleteUser(user: String)
 
-    //or
-
-    @Query("UPDATE user_table SET userdata = :user_data WHERE username LIKE :user_name")
+    //@Query("UPDATE user_table SET userdata = :user_data WHERE username LIKE :user_name")
+    //@Query("INSERT INTO user_table (username, userdata) values (:user_name, :user_data) ON DUPLICATE KEY UPDATE username = values(:user_name), userdata = values(:user_data)")
+    //@Query("INSERT OR IGNORE INTO user_table (username, userdata) values (:user_name, :user_data); UPDATE players SET username = :user_name, userdata = :user_data WHERE username = :user_name")
+    @Query("INSERT OR REPLACE INTO user_table (username, userdata) VALUES (:user_name, :user_data)")
     suspend fun update(user_name: String, user_data: String)
 
     /*

@@ -37,7 +37,7 @@ class UserRepository private constructor(userDao: UserDao) {
                 mCurrUser.postValue(updatedUser)
                 // update database (TODO in REQ4)
 
-                print("IN USER REPOSITORY")
+                println("IN USER REPOSITORY")
                 update(updatedUser) // not yet implemented
             }
         }
@@ -70,9 +70,9 @@ class UserRepository private constructor(userDao: UserDao) {
         // TODO in REQ4
 
         //
-        print("IN WORKER THREAD")
+        println("IN UREP - WORKER THREAD")
         mUsername = user.name
-        mUserData = user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + user.activity_level + "|" +  user.country + user.city
+        mUserData = user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + user.activity_level + "|" +  user.country + "|" + user.city
         mUserDao.update(mUsername!!, mUserData!!)
 
     }

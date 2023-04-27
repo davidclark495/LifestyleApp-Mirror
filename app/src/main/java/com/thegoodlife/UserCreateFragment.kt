@@ -222,7 +222,7 @@ class UserCreateFragment : Fragment() {
             transaction?.addToBackStack(null)
             transaction?.commit()
 
-            print("IN USER CREATE FRAGMENT")
+            println("IN USER CREATE FRAGMENT")
             mUserViewModel.updateCurrUser(buildUserFromFields())
         }
         mCameraButton?.setOnClickListener {

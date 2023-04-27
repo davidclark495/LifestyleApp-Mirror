@@ -45,6 +45,7 @@ abstract class UserRoomDatabase : RoomDatabase() {
                 super.onCreate(db)
                 mInstance?.let { database ->
                     scope.launch(Dispatchers.IO){
+                        print("IN ROOM DATABASE")
                         populateDbTask(database.userDao())
                     }
                 }
