@@ -75,7 +75,6 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Dummy_loc"
         android:textAlignment="center"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonSignin"

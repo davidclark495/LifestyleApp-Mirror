@@ -17,7 +17,7 @@ class UserRepository private constructor(userDao: UserDao) {
 
     // LiveData object that stores the current user
     val mCurrUser = MutableLiveData<UserData?>()
-    val mUserString = MutableLiveData<String>()
+    var mUserString: String? = null//LiveData<String>? = null// = /*Mutable*/LiveData<String>()
 
     private var mUserDao: UserDao = userDao
 
@@ -45,15 +45,20 @@ class UserRepository private constructor(userDao: UserDao) {
         }
     }
 
-    fun fetchUserString(username: String) {
-        mUsername = username
-
+    fun fetchUserString(username: String): String// LiveData<String>// MutableLiveData<String>
+    {
+        //mUsername = username
+/*
         mScope.launch(Dispatchers.IO) {
             //fetch data on a worker thread
             mUserString.postValue(username)
 
-            getUserData(username)
+            //return getUserData(username)
         }
+
+ */
+        mUserString = getUserData(username)
+        return mUserString as String// as LiveData<String>
     }
 
     fun switchToNewUser(){
@@ -69,14 +74,18 @@ class UserRepository private constructor(userDao: UserDao) {
     }
 
     @WorkerThread
-    /*suspend*/ fun getUserData(username: String): LiveData<String>
+    /*suspend*/ fun getUserData(username: String): String?//LiveData<String>//MutableLiveData<String>
     {
         println(username)
-        var userdata: LiveData<String>? = null
+        //var userdata: String? = null///*Mutable*/LiveData<String>? = null
         mScope.launch(Dispatchers.IO) {
-            userdata = mUserDao.getUserData(username)
+
+            var userdata = mUserDao.getUserData(username)
+            mUserData = userdata
         }
-        return userdata!!//.toString()
+        //var userdata = mUserDao.getUserData(username)
+        //mUserString = userdata!!
+        return mUserData//userdata!!//.toString()
     }
 
     @WorkerThread

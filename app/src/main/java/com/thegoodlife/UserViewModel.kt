@@ -11,7 +11,7 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
     private val mCurrUser: LiveData<UserData?> = repository.mCurrUser
     private var mUserRepository: UserRepository = repository
 
-    private val mUserData: LiveData<String> = repository.mUserString
+    private var mUserData: String? = null//LiveData<String>? = repository.mUserString
 
     //Use a second live data here to show entire contents of db
     // This casts a flow in the repo as a live data so an observer in the view
@@ -31,10 +31,12 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
         mUserRepository.updateCurrUser(updatedUser)
     }
 
-    fun getUserData(username: String): LiveData<String> {
-        println(username)
-        //return mUserRepository.getUserData(username)
-        return mUserData
+    fun getUserData(username: String): String?//LiveData<String> {
+    {
+        println("--$username--")
+        return mUserRepository.getUserData(username)
+        //mUserData = mUserRepository.fetchUserString(username)
+        //return mUserData as String //as LiveData<String>
     }
 
     fun switchToNewUser(){

@@ -34,6 +34,7 @@ class HikeFragment : Fragment() {
 
         mLocationET = view.findViewById(R.id.et_hikes_near_blank) as EditText
         mSearchBtn = view.findViewById(R.id.button_search_for_hikes) as ImageButton
+
         mSearchBtn?.setOnClickListener{
             val location = mLocationET?.text.toString()
             val gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(location + " hikes"))

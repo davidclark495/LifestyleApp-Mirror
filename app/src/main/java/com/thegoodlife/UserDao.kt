@@ -19,9 +19,7 @@ interface UserDao {
     //@Query("SELECT userdata FROM user_table WHERE username LIKE :user LIMIT 1")
     @Query("SELECT userdata FROM user_table WHERE username LIKE :user_username") // = works in custom as well
     //@Query("select userdata from user_table where username like \"bruh\"")
-    /*suspend*/ fun getUserData(user_username: String): LiveData<String>//MutableLiveData<String>// String UserTable //String has setter issues LiveData<String>?
-
-    //need functionality for create, switch, update, delete
+    /*suspend*/ fun getUserData(user_username: String): String// LiveData<String>// MutableLiveData<String>//MutableLiveData<String>// String UserTable //String has setter issues LiveData<String>?
 
     @Query("DELETE FROM user_table WHERE username LIKE :user")
     suspend fun deleteUser(user: String)
