@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -201,7 +203,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@+id/spinner_country"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -217,7 +219,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="-55dp" />
+        app:layout_constraintGuide_end="3dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

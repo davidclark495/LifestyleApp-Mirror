@@ -25,8 +25,8 @@ class HeaderFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_header, container, false)
 
-        mProfPic = view.findViewById(R.id.profButton)
-        mBmrText = view.findViewById(R.id.tv_bmr)
+        mProfPic = view.findViewById(R.id.profButton5)
+        mBmrText = view.findViewById(R.id.tv_bmr5)
 
         mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
         mUserViewModel.currUser.observe(requireActivity(), mCurrUserObserver)

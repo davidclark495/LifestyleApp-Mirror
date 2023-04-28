@@ -112,7 +112,7 @@ class UserRepository private constructor(userDao: UserDao) {
 
         println("IN UREP - WORKER THREAD")
         mUsername = user.username
-        mUserData = user.name + "|" + user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + "|" + user.activity_level + "|" +  user.country + "|" + user.city
+        mUserData = user.name + "|" + user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + "|" + user.activity_level + "|" + user.profile_pic_file_path + "|" +  user.country + "|" + user.city
         mUserDao.update(mUsername!!, mUserData!!)
 
     }

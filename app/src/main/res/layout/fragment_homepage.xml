@@ -5,6 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tv_bmr_label"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:text="@string/target_calories"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profButton" />
+
+    <ImageButton
+        android:id="@+id/profButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/anonymous_profile" />
+
+    <TextView
+        android:id="@+id/tv_bmr"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="2000"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_bmr_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bmr_label" />
+
     <ImageButton
         android:id="@+id/hikeButton"
         android:layout_width="100dp"
@@ -58,5 +87,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weatherButton" />
+
+    <TextView
+        android:id="@+id/usernametext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,37 +7,37 @@
     tools:context=".HeaderFragment">
 
     <ImageButton
-        android:id="@+id/profButton"
+        android:id="@+id/profButton5"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_bmr_label"
+        app:layout_constraintStart_toEndOf="@+id/tv_bmr_label5"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/anonymous_profile" />
 
     <TextView
-        android:id="@+id/tv_bmr_label"
+        android:id="@+id/tv_bmr_label5"
         android:layout_width="100dp"
         android:layout_height="25dp"
         android:text="@string/target_calories"
-        app:layout_constraintEnd_toStartOf="@+id/profButton"
+        app:layout_constraintEnd_toStartOf="@+id/profButton5"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/profButton" />
+        app:layout_constraintTop_toTopOf="@+id/profButton5" />
 
     <TextView
-        android:id="@+id/tv_bmr"
+        android:id="@+id/tv_bmr5"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="2000"
         android:textAlignment="center"
         android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_bmr_label"
-        app:layout_constraintStart_toStartOf="@+id/tv_bmr_label"
-        app:layout_constraintTop_toBottomOf="@+id/tv_bmr_label" />
+        app:layout_constraintEnd_toEndOf="@+id/tv_bmr_label5"
+        app:layout_constraintStart_toStartOf="@+id/tv_bmr_label5"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bmr_label5" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

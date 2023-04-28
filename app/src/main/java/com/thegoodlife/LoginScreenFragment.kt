@@ -34,7 +34,7 @@ class LoginScreenFragment : Fragment(){
         mUsernameET = view.findViewById(R.id.editTextUsername) as EditText
 
 
-        //mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+        mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)//was commented out...
 
 
 
@@ -68,7 +68,6 @@ class LoginScreenFragment : Fragment(){
 
             println("attempting...")
 
-
             println(username)
             println(userstring)
 
@@ -76,14 +75,19 @@ class LoginScreenFragment : Fragment(){
 
             userstring = mUserViewModel.getUserData(username)
 
-            while(userstring == null)
+            var timeout = 0
+
+            while(userstring == null && timeout < 99)
             {
+                timeout++
+                print(timeout)
+
                 userstring = mUserViewModel.getUserData(username)
-                println(userstring)
+                //println(userstring)
             }
 
-            println("done")
-            println(userstring)
+            //println("done")
+            //println(userstring)
 
             /*
             catch(e: Exception)
@@ -118,7 +122,7 @@ class LoginScreenFragment : Fragment(){
 
             else
             {
-                //toast
+                Toast.makeText(requireActivity(), "Username Not Found", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -130,6 +134,7 @@ class LoginScreenFragment : Fragment(){
 
         print(userstring)
         var strings = userstring.split('|')
+        print(strings)
 
         val user = UserData(
             //username picker -> saved in bundle from login screen or bundle
@@ -137,16 +142,16 @@ class LoginScreenFragment : Fragment(){
             //need to make login screen as the very first thing, then
 
             username,
-            strings[0],
-            strings[1] as Int,
-            strings[2] as Int,
-            strings[3] as Int,
-            strings[4],
-            strings[5],
+            strings[0], //name
+            strings[1].toInt() as Int,  //age
+            strings[2].toInt() as Int,  //weight
+            strings[3].toInt() as Int,  //height
+            strings[4], //sex
+            strings[5], //activity
             null,//strings[6], //bitmap / load profile picture -> worth it?
-            strings[7],//profile-pic-path
+            strings[6],//profile-pic-path
+            strings[7],
             strings[8],
-            strings[9],
 
         )
 

@@ -93,6 +93,7 @@ class UserCreateFragment : Fragment() {
 
         var userstring:String? = null
 
+        /*
         try{
             userstring = mUserViewModel.getUserData("bruhbruhbruh").toString()
         } catch(e: Exception)
@@ -105,6 +106,7 @@ class UserCreateFragment : Fragment() {
             var userdataarray = userstring.split('|')
             print(userdataarray)
         }
+        */
 
         // Setup stuff
         // age
@@ -245,6 +247,7 @@ class UserCreateFragment : Fragment() {
             //println("IN USER CREATE FRAGMENT")
             mUserViewModel.updateCurrUser(buildUserFromFields())
         }
+
         mCameraButton?.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             try {
@@ -386,6 +389,7 @@ class UserCreateFragment : Fragment() {
                     this.mProfilePhotoFilePath = filePathString
                 }
 
+                //should probably not be here
                 mUserViewModel.updateCurrUser(buildUserFromFields())
             }
         }
@@ -396,8 +400,8 @@ class UserCreateFragment : Fragment() {
 
             //need to make login scren as the very first thing, then
 
-            "bruhbruhbruh",
 
+            mNameET?.text.toString() + mAgeNumPicker?.value + mCityStr,
             mNameET?.text.toString(),
             mAgeNumPicker?.value,
             mWeightNumPicker?.value,
