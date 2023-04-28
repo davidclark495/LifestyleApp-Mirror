@@ -1,5 +1,7 @@
 package com.thegoodlife
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 
 import kotlinx.coroutines.flow.Flow
@@ -14,9 +16,10 @@ interface UserDao {
     @Query("DELETE FROM user_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM user_table WHERE username LIKE :user LIMIT 1")
-    suspend fun getUserData(user: String): UserTable //String has setter issues
-    //called at the login page? -> unique
+    //@Query("SELECT userdata FROM user_table WHERE username LIKE :user LIMIT 1")
+    @Query("SELECT userdata FROM user_table WHERE username LIKE :user_username") // = works in custom as well
+    //@Query("select userdata from user_table where username like \"bruh\"")
+    /*suspend*/ fun getUserData(user_username: String): LiveData<String>//MutableLiveData<String>// String UserTable //String has setter issues LiveData<String>?
 
     //need functionality for create, switch, update, delete
 
@@ -28,8 +31,9 @@ interface UserDao {
     //@Query("INSERT OR IGNORE INTO user_table (username, userdata) values (:user_name, :user_data); UPDATE players SET username = :user_name, userdata = :user_data WHERE username = :user_name")
 
     //@Query("INSERT OR REPLACE INTO user_table (username, userdata) VALUES (:user_name, :user_data)")
-    @Query("INSERT OR REPLACE INTO user_table (username, userdata) VALUES (:user_name, :user_data)")
-    suspend fun update(user_name: String, user_data: String)
+    @Query("INSERT OR REPLACE INTO user_table (username, userdata) VALUES (:user_username, :user_data)")
+    //@Update(onConflict = OnConflictStrategy.REPLACE )
+    suspend fun update(user_username: String, user_data: String)///*userTable: UserTable)*/user_id: Int, current: String, user_data: String)
 
     /*
     @Delete

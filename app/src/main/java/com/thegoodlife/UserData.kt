@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import kotlin.math.round
 
 class UserData {
+    private var mUsername: String? = null
     private var mName: String? = null
     private var mAge: Int? = null
     private var mWeight: Int? = null    // in pounds
@@ -18,6 +19,7 @@ class UserData {
     //update for location(?), use in data modification / loading frag
 
     constructor(
+        username: String?,
         name: String?,
         age: Int?,
         weight: Int?,
@@ -29,6 +31,7 @@ class UserData {
         country: String?,
         city: String?
     ){
+        mUsername = username
         mName = name
         mAge = age
         mWeight = weight
@@ -42,6 +45,9 @@ class UserData {
     }
 
     //Implement properties w/ getters & setters (use member variables as backing fields)
+    var username: String?
+        get() = mUsername
+        set(value) {mUsername = value}
     var name: String?
         get() = mName
         set(value) { mName = value }

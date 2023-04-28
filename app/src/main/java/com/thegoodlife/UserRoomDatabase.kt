@@ -53,7 +53,7 @@ abstract class UserRoomDatabase : RoomDatabase() {
         }
 
         suspend fun populateDbTask (userDao: UserDao) {
-            userDao.insert(UserTable("Dummy_loc","Dummy_data"))//too many arguments? -> table.java stub
+            userDao.insert(UserTable("Dummy_name","Dummy_data"))//too many arguments? -> table.java stub
         }
 
         /*

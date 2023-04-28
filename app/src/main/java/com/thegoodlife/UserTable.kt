@@ -9,22 +9,30 @@ import androidx.room.Entity
     @Entity(tableName = "user_table")
     data class UserTable(
 
-        //us
-        @PrimaryKey var username: String, //hidden ID
-        //@ColumnInfo(name="")
+        //@PrimaryKey(autoGenerate = true) val id: Int,
+        //var iscurrent: String,
+        @PrimaryKey var username: String,
+        var userdata: String,
 
+        //@PrimaryKey var username: String,
         //var userdata: String,
 
-        var name: String,
-        var age: Int,
-        var weight: Int,
-        var height: Int,
-        var activity: String,
-        var sex: String,
-        var country: String,
-        var city: String
+        //or just bool, data, and idno
+/*
+        @PrimaryKey(autoGenerate = true) val id: Int,
+        var is_current: Boolean?,
+        var name: String?,
+        var age: Int?,
+        var weight: Int?,
+        var height: Int?,
+        var sex: String?,
+        var activity_level: String?,
+        var profile_pic_file_path: String?,
+        var country: String?,
+        var city: String?
 
 
+ */
 
         /*
         @field:ColumnInfo(name = "username")

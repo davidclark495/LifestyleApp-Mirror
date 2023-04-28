@@ -2,6 +2,7 @@ package com.thegoodlife
 
 import androidx.lifecycle.MutableLiveData
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ class UserRepository private constructor(userDao: UserDao) {
 
     // LiveData object that stores the current user
     val mCurrUser = MutableLiveData<UserData?>()
+    val mUserString = MutableLiveData<String>()
 
     private var mUserDao: UserDao = userDao
 
@@ -37,9 +39,20 @@ class UserRepository private constructor(userDao: UserDao) {
                 mCurrUser.postValue(updatedUser)
                 // update database (TODO in REQ4)
 
-                println("IN USER REPOSITORY")
+                //println("IN USER REPOSITORY")
                 update(updatedUser) // not yet implemented
             }
+        }
+    }
+
+    fun fetchUserString(username: String) {
+        mUsername = username
+
+        mScope.launch(Dispatchers.IO) {
+            //fetch data on a worker thread
+            mUserString.postValue(username)
+
+            getUserData(username)
         }
     }
 
@@ -56,22 +69,41 @@ class UserRepository private constructor(userDao: UserDao) {
     }
 
     @WorkerThread
+    /*suspend*/ fun getUserData(username: String): LiveData<String>
+    {
+        println(username)
+        var userdata: LiveData<String>? = null
+        mScope.launch(Dispatchers.IO) {
+            userdata = mUserDao.getUserData(username)
+        }
+        return userdata!!//.toString()
+    }
+
+    @WorkerThread
     suspend fun insert(newUser: UserData){
         // TODO in REQ4
 
         if (mUsername != null && mUserData != null) {
-            mUserDao.insert(UserTable(mUsername!!, mUserData!!))
+            //mUserDao.insert(UserTable(mUsername!!, mUserData!!))
+            //mUserDao.insert(UserTable(mUsername!!, true, mUserData!!))
+
         }
     }
 
     @WorkerThread
-    suspend fun update(user: UserData){
+    suspend fun update(user: UserData){//dao update takes in id, current, and data -> should just be current ==>> get whatever has curr = true,
         // TODO in REQ4
-
+        /*
+        if (user != null)
+        {//mUsername != null && mUserData != null) {
+            mUserDao.update(user)//mUsername!!, mUserData!!) //was usertable(,)
+        }
+         */
         //
+
         println("IN UREP - WORKER THREAD")
-        mUsername = user.name
-        mUserData = user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + "|" + user.activity_level + "|" +  user.country + "|" + user.city
+        mUsername = user.username
+        mUserData = user.name + "|" + user.age.toString() + "|" + user.weight.toString() + "|" + user.height.toString() + "|" +  user.sex + "|" + user.activity_level + "|" +  user.country + "|" + user.city
         mUserDao.update(mUsername!!, mUserData!!)
 
     }

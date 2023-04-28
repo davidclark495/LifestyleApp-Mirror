@@ -72,6 +72,8 @@ class UserCreateFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_user_create, container, false)
 
+        //get username from bundle passed by loginscreen
+
         // Get views
         mNameET = view.findViewById(R.id.et_name) as EditText
         mAgeNumPicker = view.findViewById(R.id.number_age) as NumberPicker
@@ -88,6 +90,21 @@ class UserCreateFragment : Fragment() {
         mUserViewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
         mUserViewModel.currUser.observe(requireActivity(), mCurrUserObserver)
         //mUserViewModel.allUsers.observe(requireActivity(), flowObserver)
+
+        var userstring:String? = null
+
+        try{
+            userstring = mUserViewModel.getUserData("bruhbruhbruh").toString()
+        } catch(e: Exception)
+        {
+            //-> will this cause rotation creation/destruction problems?
+        }
+
+        if(userstring != null)
+        {
+            var userdataarray = userstring.split('|')
+            print(userdataarray)
+        }
 
         // Setup stuff
         // age
@@ -208,6 +225,7 @@ class UserCreateFragment : Fragment() {
                     //mActivityLevelStr = null
                 }
             }
+
         // save button
         mSaveButton?.setOnClickListener {
             // build user from fields & update ViewModel
@@ -217,12 +235,14 @@ class UserCreateFragment : Fragment() {
 
             // replace this fragment w/ a new Homepage fragment
             val homepageFragment = HomepageFragment()
+
             val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.fl_frag_container, homepageFragment, "homepage_frag")
+            val oldfrag = activity?.supportFragmentManager?.findFragmentByTag("user_frag")
+            transaction?.replace(oldfrag?.getId()!!, homepageFragment, "homepage_frag")
             transaction?.addToBackStack(null)
             transaction?.commit()
 
-            println("IN USER CREATE FRAGMENT")
+            //println("IN USER CREATE FRAGMENT")
             mUserViewModel.updateCurrUser(buildUserFromFields())
         }
         mCameraButton?.setOnClickListener {
@@ -372,6 +392,12 @@ class UserCreateFragment : Fragment() {
 
     private fun buildUserFromFields(): UserData {
         val user = UserData(
+            //username picker -> saved in bundle from login screen or bundle
+
+            //need to make login scren as the very first thing, then
+
+            "bruhbruhbruh",
+
             mNameET?.text.toString(),
             mAgeNumPicker?.value,
             mWeightNumPicker?.value,

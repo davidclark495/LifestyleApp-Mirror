@@ -11,6 +11,8 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
     private val mCurrUser: LiveData<UserData?> = repository.mCurrUser
     private var mUserRepository: UserRepository = repository
 
+    private val mUserData: LiveData<String> = repository.mUserString
+
     //Use a second live data here to show entire contents of db
     // This casts a flow in the repo as a live data so an observer in the view
     // can watch it. If you want to observe variables in the repo from the viewmodel, use
@@ -20,12 +22,19 @@ class UserViewModel(repository: UserRepository) : ViewModel() {
 
     // TODO in REQ4
 //    val allCityWeather: LiveData<List<WeatherFragment>> = repository.allCityWeather.asLiveData()
+
     var allUsers: LiveData<List<UserTable>> = repository.allUserData.asLiveData()
 
     fun updateCurrUser(updatedUser: UserData?){
         // TODO
         println("IN USER VIEW MODEL")
         mUserRepository.updateCurrUser(updatedUser)
+    }
+
+    fun getUserData(username: String): LiveData<String> {
+        println(username)
+        //return mUserRepository.getUserData(username)
+        return mUserData
     }
 
     fun switchToNewUser(){

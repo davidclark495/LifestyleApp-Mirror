@@ -27,12 +27,25 @@ class MainActivity : AppCompatActivity() {
         mWeatherViewModel.weather
 
         if(savedInstanceState == null) {
+
+            //signin / signup fragment :
+            //signin asks for username -> queries -> goes to
+
+            //or have currentuser boolean like david did: select from
+/*
             //Create the fragment
             val userCreateFragment = UserCreateFragment()
 
             //Replace the fragment container
             val fTrans = supportFragmentManager.beginTransaction()
             fTrans.replace(R.id.fl_frag_container, userCreateFragment, "userCreat_frag")
+            fTrans.commit()
+*/
+            val loginScreenFragment = LoginScreenFragment()
+
+            //Replace the fragment container
+            val fTrans = supportFragmentManager.beginTransaction()
+            fTrans.replace(R.id.fl_login_container, loginScreenFragment, "loginScreen_frag")
             fTrans.commit()
         }
     }

@@ -33,8 +33,10 @@ class HomepageFragment : Fragment() {
             val hikeFragment = HikeFragment()
 //            val args = Bundle()
 //            hikeFragment.arguments = args
+
             val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.fl_frag_container, hikeFragment, "hike_frag")
+            val oldfrag = activity?.supportFragmentManager?.findFragmentByTag("homepage_frag")
+            transaction?.replace(oldfrag?.getId()!!, hikeFragment, "hike_frag")
             transaction?.addToBackStack(null)
             transaction?.commit()
         }
@@ -44,7 +46,8 @@ class HomepageFragment : Fragment() {
 //            val args = Bundle()
 //            weatherFragment.arguments = args
             val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.fl_frag_container, weatherFragment, "weather_frag")
+            val oldfrag = activity?.supportFragmentManager?.findFragmentByTag("homepage_frag")
+            transaction?.replace(oldfrag?.getId()!!, weatherFragment, "weather_frag")
             transaction?.addToBackStack(null)
             transaction?.commit()
         }

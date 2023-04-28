@@ -38,10 +38,12 @@ class HeaderFragment : Fragment() {
 //            val args = Bundle()
 //            userFragment.arguments = args
             // switch to fragment
+            /*
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.fl_frag_container, userFragment, "userCreate_frag")
             transaction?.addToBackStack(null)
             transaction?.commit()
+            */
         }
 
         return view
